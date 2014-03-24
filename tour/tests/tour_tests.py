@@ -13,12 +13,6 @@ class TourTest(TestCase):
         self.test_user = User.objects.create_user('test', 'test@gmail.com', 'test')
         self.test_user2 = User.objects.create_user('test2', 'test2@gmail.com', 'test2')
 
-    def login_user1(self):
-        self.client.login(username='test', password='test')
-
-    def login_user2(self):
-        self.client.login(username='test2', password='test2')
-
     def reset_mock_tour_states(self):
         mock_steps = [MockStep1, MockStep2, MockStep3, MockStep4]
         for mock_step in mock_steps:
