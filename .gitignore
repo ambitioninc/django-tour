@@ -1,0 +1,30 @@
+# Compiled python files
+*.pyc
+
+# Vim files
+*.swp
+*.swo
+
+# Pycharm
+.idea
+
+# Coverage files
+.coverage
+
+# Setuptools distribution folder.
+/dist/
+
+# Python egg metadata, regenerated from source files by setuptools.
+/*.egg-info
+/*.egg
+
+# Virtual environment
+env/
+
+# Js Stuff
+node_modules/
+npm-debug.log
+.grunt/
+.tmp/
+_SpecRunner.html
+
