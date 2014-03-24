@@ -50,6 +50,10 @@ class MockStep4(MockStep):
         return 'mock4'
 
 
+class EmptyStep(MockStep):
+    pass
+
+
 class MockTour(BaseTour):
     tour_class = 'tour.tests.mocks.MockTour'
     name = 'Mock Tour'
@@ -67,3 +71,29 @@ class MockTour2(BaseTour):
         MockStep3,
         MockStep4,
     ]
+
+
+class MockTour3(BaseTour):
+    tour_class = 'tour.tests.mocks.MockTour3'
+    name = 'Mock Tour 3'
+    steps = [
+        EmptyStep
+    ]
+
+
+class MockTour4(BaseTour):
+    name = 'Mock Tour 4'
+    steps = [
+        EmptyStep
+    ]
+
+
+class CompleteTour(BaseTour):
+    tour_class = 'tour.tests.mocks.CompleteTour'
+    name = 'Complete Tour'
+    steps = [
+        MockStep1
+    ]
+
+    def is_complete(self, user=None):
+        return True

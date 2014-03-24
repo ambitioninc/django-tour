@@ -1,8 +1,10 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
+from tour.exceptions import MissingStepClass, MissingTourClass
 
 from tour.models import Tour, Step, TourStatus
-from tour.tests.mocks import MockTour, MockStep1, MockStep2, MockTour2, MockStep3, MockStep4
+from tour.tests.mocks import MockTour, MockStep1, MockStep2, MockTour2, MockStep3, MockStep4, MockTour3, MockTour4, CompleteTour
+from tour.tours import BaseStep
 
 
 class TourTest(TestCase):
@@ -18,6 +20,28 @@ class TourTest(TestCase):
         for mock_step in mock_steps:
             mock_step.complete = False
 
+    def test_empty_url(self):
+        """
+        Verifies that the base step does not return a url
+        """
+        self.assertIsNone(BaseStep.get_url())
+
+    def test_is_complete(self):
+        """
+        Verifies that the base step is never complete
+        """
+        self.assertFalse(BaseStep(None).is_complete(self.test_user))
+
+    def test_exceptions(self):
+        """
+        Verifies that an exception is raised when there is no step class or tour class
+        """
+        with self.assertRaises(MissingStepClass):
+            MockTour3.create()
+
+        with self.assertRaises(MissingTourClass):
+            MockTour4.create()
+
     def test_create(self):
         """
         Verifies that the tour gets created only once
@@ -32,8 +56,38 @@ class TourTest(TestCase):
         self.assertEqual(1, Tour.objects.all().count())
         self.assertEqual(len(MockTour.steps), Step.objects.all().count())
 
+    def test_delete(self):
+        """
+        Verifies that a tour and its steps get deleted
+        """
+        MockTour.create()
+        MockTour2.create()
+        self.assertTrue(2, Tour.objects.count())
+        self.assertTrue(4, Step.objects.count())
+
+        MockTour.delete()
+        self.assertTrue(1, Tour.objects.count())
+        self.assertTrue(2, Step.objects.count())
+
+    def test_mark_complete(self):
+        """
+        Verifies that tours get marked as complete per user or for all users
+        """
+        MockTour.add_user(self.test_user)
+        MockTour.add_user(self.test_user2)
+        self.assertEqual(2, TourStatus.objects.filter(complete=False).count())
+        tour_class = Tour.objects.get_for_user(self.test_user)
+        tour_class.mark_complete(user=self.test_user)
+        self.assertEqual(1, TourStatus.objects.filter(complete=False).count())
+        MockTour.add_user(self.test_user)
+        self.assertEqual(2, TourStatus.objects.filter(complete=False).count())
+        tour_class = Tour.objects.get().load_tour_class()
+        tour_class.mark_complete()
+        self.assertEqual(0, TourStatus.objects.filter(complete=False).count())
+
     def test_user_functions(self):
         """
+        Makes sure a tour is created when adding a user to a tour that doesn't exist
         Verifies that a user can be assigned a tour only once
         Tests fetching an active tour for a user
         """
@@ -43,6 +97,12 @@ class TourTest(TestCase):
         MockTour.create()
 
         # Add a user
+        MockTour.add_user(self.test_user)
+        self.assertEqual(1, TourStatus.objects.all().count())
+
+        # Delete all tours and make sure a tour is created when adding a user
+        Tour.objects.all().delete()
+        self.assertEqual(0, TourStatus.objects.all().count())
         MockTour.add_user(self.test_user)
         self.assertEqual(1, TourStatus.objects.all().count())
 
@@ -116,6 +176,14 @@ class TourTest(TestCase):
         MockStep2.complete = True
         tour_class = Tour.objects.get_for_user(self.test_user)
         self.assertIsNone(tour_class)
+
+        # Check that no url is returned for a complete tour
+        Tour.objects.all().delete()
+        Step.objects.all().delete()
+        CompleteTour.add_user(self.test_user)
+        tour_class = Tour.objects.get().load_tour_class()
+        url = tour_class.get_next_url()
+        self.assertIsNone(url)
 
     def test_url_list(self):
         """

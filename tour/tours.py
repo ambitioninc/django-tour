@@ -1,4 +1,5 @@
 from .models import Tour, Step, TourStatus
+from tour.exceptions import MissingStepClass, MissingTourClass
 
 
 class BaseStep(object):
@@ -22,8 +23,7 @@ class BaseStep(object):
         Creates the step record
         """
         if cls.step_class is None:
-            # TODO: better exception
-            raise Exception('Step {0} needs a step_class in order to call create'.format(cls))
+            raise MissingStepClass('Step {0} needs a step_class in order to call create'.format(cls))
 
         # Get parent step if needed
         parent_step = None
@@ -66,8 +66,7 @@ class BaseTour(object):
         Creates the tour record
         """
         if cls.tour_class is None:
-            # TODO: better exception
-            raise Exception('Tour {0} needs a tour_class in order to call create'.format(cls))
+            raise MissingTourClass('Tour {0} needs a tour_class in order to call create'.format(cls))
 
         tour_class = cls.tour_class
         if cls.parent_tour:
