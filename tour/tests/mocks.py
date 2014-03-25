@@ -57,6 +57,12 @@ class EmptyStep(MockStep):
     pass
 
 
+class NoUrlStep(MockStep):
+    step_class = 'tour.tests.mocks.NoUrlStep'
+    name = 'No Url Step'
+    complete = False
+
+
 class MockTour(BaseTour):
     tour_class = 'tour.tests.mocks.MockTour'
     name = 'Mock Tour'

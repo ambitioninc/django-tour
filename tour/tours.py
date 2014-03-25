@@ -86,13 +86,7 @@ class BaseTour(object):
 
     @classmethod
     def delete(cls):
-        # Build list of step classes
-        step_classes = [step.step_class for step in cls.steps]
-        Step.objects.filter(step_class__in=step_classes).delete()
-
-        # Delete the tour if not a child tour
-        if cls.parent_tour is None:
-            Tour.objects.filter(tour_class=cls.tour_class).delete()
+        Tour.objects.filter(tour_class=cls.tour_class).delete()
 
     @classmethod
     def add_user(cls, user):

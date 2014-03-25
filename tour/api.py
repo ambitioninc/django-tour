@@ -1,9 +1,10 @@
 import json
+
 from tastypie.authentication import SessionAuthentication
 from tastypie.authorization import Authorization
 from tastypie.resources import ModelResource
 
-from .models import Tour, Step, TourStatus
+from .models import Tour, Step
 
 
 class StepResource(ModelResource):
