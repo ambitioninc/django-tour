@@ -7,10 +7,10 @@ from tour.tests.mocks import MockTour, MockStep1, MockStep2, MockTour2, MockStep
 from tour.tours import BaseStep
 
 
-class TourTest(TestCase):
+class BaseTourTest(TestCase):
 
     def setUp(self):
-        super(TourTest, self).setUp()
+        super(BaseTourTest, self).setUp()
         self.reset_mock_tour_states()
         self.test_user = User.objects.create_user('test', 'test@gmail.com', 'test')
         self.test_user2 = User.objects.create_user('test2', 'test2@gmail.com', 'test2')
@@ -19,6 +19,9 @@ class TourTest(TestCase):
         mock_steps = [MockStep1, MockStep2, MockStep3, MockStep4]
         for mock_step in mock_steps:
             mock_step.complete = False
+
+
+class TourTest(BaseTourTest):
 
     def test_empty_url(self):
         """
