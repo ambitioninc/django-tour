@@ -1,6 +1,9 @@
 from tour.tours import BaseStep, BaseTour
 
 
+mock_null_value = None
+
+
 class MockStep(BaseStep):
     complete = False
 

@@ -185,6 +185,7 @@ class TourTest(BaseTourTest):
         Step.objects.all().delete()
         CompleteTour.add_user(self.test_user)
         tour_class = Tour.objects.get().load_tour_class()
+        self.assertTrue(tour_class.is_complete())
         url = tour_class.get_next_url()
         self.assertIsNone(url)
 
