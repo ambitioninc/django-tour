@@ -3,7 +3,8 @@ from django.test import TestCase
 from tour.exceptions import MissingStepClass, MissingTourClass
 
 from tour.models import Tour, Step, TourStatus
-from tour.tests.mocks import MockTour, MockStep1, MockStep2, MockTour2, MockStep3, MockStep4, MockTour3, MockTour4, CompleteTour, NoUrlStep
+from tour.tests.mocks import (
+    MockTour, MockStep1, MockStep2, MockTour2, MockStep3, MockStep4, MockTour3, MockTour4, CompleteTour)
 from tour.tours import BaseStep
 
 
