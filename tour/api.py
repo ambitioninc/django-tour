@@ -8,7 +8,9 @@ from .models import Tour, Step
 
 
 class StepResource(ModelResource):
-
+    """
+    Api to access the Step model. Mostly used for serializing the steps in the tour dehydration
+    """
     class Meta:
         queryset = Step.objects.all()
         filtering = {
@@ -20,7 +22,9 @@ class StepResource(ModelResource):
 
 
 class TourResource(ModelResource):
-
+    """
+    Api to access the Tour models.
+    """
     class Meta:
         queryset = Tour.objects.all()
         filtering = {
@@ -31,6 +35,9 @@ class TourResource(ModelResource):
         authentication = SessionAuthentication()
 
     def dehydrate(self, bundle):
+        """
+        Provides serialization and flattening of the tour's steps
+        """
         bundle = super(TourResource, self).dehydrate(bundle)
         is_complete = bundle.obj.load_tour_class().is_complete(user=bundle.request.user)
         if is_complete:
@@ -51,11 +58,17 @@ class TourResource(ModelResource):
         return bundle
 
     def alter_list_data_to_serialize(self, request, data):
+        """
+        Filter out any tours that are null. A tour will be returned as null if it is complete
+        """
         data = super(TourResource, self).alter_list_data_to_serialize(request, data)
         data['objects'] = [obj for obj in data['objects'] if obj is not None]
         return data
 
     def apply_filters(self, request, applicable_filters):
+        """
+        Automatically filter the tour resource to return incomplete tours for a specific user
+        """
         base_object_list = super(TourResource, self).apply_filters(request, applicable_filters)
         base_object_list = base_object_list.filter(tourstatus__complete=False, tourstatus__user=request.user)
         return base_object_list

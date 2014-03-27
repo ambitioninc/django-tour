@@ -9,7 +9,9 @@ from tour.tours import BaseStep
 
 
 class BaseTourTest(TestCase):
-
+    """
+    Provides basic setup for tour tests like creating users
+    """
     def setUp(self):
         super(BaseTourTest, self).setUp()
         self.reset_mock_tour_states()
@@ -29,7 +31,9 @@ class BaseTourTest(TestCase):
 
 
 class TourTest(BaseTourTest):
-
+    """
+    Tests the functionality of the Tour and Step classes
+    """
     def test_empty_url(self):
         """
         Verifies that the base step does not return a url
@@ -222,3 +226,11 @@ class TourTest(BaseTourTest):
         urls = tour_class.get_url_list()
         expected_urls = ['mock1', 'mock3', 'mock4', 'mock2']
         self.assertEqual(expected_urls, urls)
+
+    def test_next_url(self):
+        """
+        Verifies that the tour manager's next url method works
+        """
+        self.assertIsNone(Tour.objects.get_next_url(self.test_user))
+        MockTour.add_user(self.test_user)
+        self.assertEqual('mock1', Tour.objects.get_next_url(self.test_user))

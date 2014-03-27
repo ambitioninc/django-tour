@@ -3,7 +3,9 @@ from tour.utils.import_string import import_string
 
 
 class UtilTest(TestCase):
-
+    """
+    Tests the functions in the utils file
+    """
     def test_import_string(self):
         """
         Tests all outcomes out import_string

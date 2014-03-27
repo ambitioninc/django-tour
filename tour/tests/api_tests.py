@@ -1,8 +1,9 @@
-from django.core.urlresolvers import reverse
 import json
+
+from django.core.urlresolvers import reverse
+
 from tour.models import Tour
 from tour.tests.mocks import MockTour, MockStep1, MockStep2, NoUrlStep
-
 from tour.tests.tour_tests import BaseTourTest
 
 

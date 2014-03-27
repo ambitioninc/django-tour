@@ -5,8 +5,13 @@ from tour.utils.import_string import import_string
 
 
 class TourManager(models.Manager):
-
+    """
+    Provides extra functionality for the Tour model
+    """
     def get_for_user(self, user):
+        """
+        Checks if a tour exists for a user and returns the instantiated tour object
+        """
         queryset = self
         tours = queryset.filter(tourstatus__user=user, tourstatus__complete=False)
         for tour in tours:
@@ -15,8 +20,21 @@ class TourManager(models.Manager):
                 return tour_class
         return None
 
+    def get_next_url(self, user):
+        """
+        Convenience method to get the next url for the specified user
+        """
+        tour = self.get_for_user(user)
+        if not tour:
+            return None
+        return tour.get_next_url()
+
 
 class Tour(models.Model):
+    """
+    Container object for tour steps. Provides functionality for loading the tour logic class
+    and fetching the steps in the correct order.
+    """
     name = models.CharField(max_length=128, unique=True)
     tour_class = models.CharField(max_length=128, unique=True)
     users = models.ManyToManyField(User, through='TourStatus')
@@ -43,6 +61,10 @@ class Tour(models.Model):
 
 
 class Step(models.Model):
+    """
+    Represents one step of the tour that must be completed. The custom logic is implemented
+    in the class specified in step_class
+    """
     name = models.CharField(max_length=128, unique=True)
     url = models.CharField(max_length=128, null=True, blank=True)
     tour = models.ForeignKey(Tour)
@@ -57,6 +79,10 @@ class Step(models.Model):
 
 
 class TourStatus(models.Model):
+    """
+    This is the model that represents the relationship between a user and a tour. Keeps
+    track of whether the tour has been completed by a user.
+    """
     tour = models.ForeignKey(Tour)
     user = models.ForeignKey(User)
     complete = models.BooleanField(default=False)

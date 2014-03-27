@@ -4,8 +4,10 @@ from tour.tests.mocks import MockTour, MockRequest, MockStep1
 from tour.tests.tour_tests import BaseTourTest
 
 
-class TourTest(BaseTourTest):
-
+class TemplateTagTest(BaseTourTest):
+    """
+    Tests the functionality of the template tag
+    """
     def test_tour_tag(self):
         """
         Verifies that a tour gets displayed when a user has a tour

@@ -15,12 +15,15 @@ class BaseStep(object):
 
     @classmethod
     def get_url(cls):
+        """
+        This is meant to be overridden by subclasses to return the url of the step.
+        """
         return None
 
     @classmethod
     def create(cls, tour):
         """
-        Creates the step record
+        Creates the step record under the specified tour
         """
         if cls.step_class is None:
             raise MissingStepClass('Step {0} needs a step_class in order to call create'.format(cls))
@@ -86,6 +89,10 @@ class BaseTour(object):
 
     @classmethod
     def delete(cls):
+        """
+        Deletes the tour and its steps. If the tour has a parent tour, then only the
+        steps are deleted because there isn't a tour object.
+        """
         # Build list of step classes
         step_classes = [step.step_class for step in cls.steps]
         Step.objects.filter(step_class__in=step_classes).delete()
@@ -96,6 +103,9 @@ class BaseTour(object):
 
     @classmethod
     def add_user(cls, user):
+        """
+        Adds a relationship record for the user. Creates the tour record if it doesn't already exist
+        """
         try:
             tour = Tour.objects.get(tour_class=cls.tour_class)
         except Exception:
@@ -115,6 +125,9 @@ class BaseTour(object):
         return None
 
     def get_url_list(self):
+        """
+        Returns a flattened list of urls of all steps contained in the tour.
+        """
         return [step.url for step in self.tour.get_steps() if step.url]
 
     def is_complete(self, user=None):
