@@ -16,6 +16,12 @@ class BaseTourTest(TestCase):
         self.test_user = User.objects.create_user('test', 'test@gmail.com', 'test')
         self.test_user2 = User.objects.create_user('test2', 'test2@gmail.com', 'test2')
 
+    def login_user1(self):
+        self.client.login(username='test', password='test')
+
+    def login_user2(self):
+        self.client.login(username='test2', password='test2')
+
     def reset_mock_tour_states(self):
         mock_steps = [MockStep1, MockStep2, MockStep3, MockStep4]
         for mock_step in mock_steps:
@@ -60,18 +66,27 @@ class TourTest(BaseTourTest):
         self.assertEqual(1, Tour.objects.all().count())
         self.assertEqual(len(MockTour.steps), Step.objects.all().count())
 
+        # Create a tour with a parent and make sure only the steps get added to the parent tour
+        MockTour2.create()
+        self.assertEqual(1, Tour.objects.count())
+        self.assertEqual(4, Step.objects.count())
+
     def test_delete(self):
         """
         Verifies that a tour and its steps get deleted
         """
         MockTour.create()
         MockTour2.create()
-        self.assertTrue(2, Tour.objects.count())
-        self.assertTrue(4, Step.objects.count())
+        self.assertEqual(1, Tour.objects.count())
+        self.assertEqual(4, Step.objects.count())
+
+        MockTour2.delete()
+        self.assertEqual(1, Tour.objects.count())
+        self.assertEqual(2, Step.objects.count())
 
         MockTour.delete()
-        self.assertTrue(1, Tour.objects.count())
-        self.assertTrue(2, Step.objects.count())
+        self.assertEqual(0, Tour.objects.count())
+        self.assertEqual(0, Step.objects.count())
 
     def test_mark_complete(self):
         """

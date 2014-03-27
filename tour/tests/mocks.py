@@ -4,6 +4,12 @@ from tour.tours import BaseStep, BaseTour
 mock_null_value = None
 
 
+class MockRequest(object):
+    def __init__(self, user=None, path=None):
+        self.user = user
+        self.path = path
+
+
 class MockStep(BaseStep):
     complete = False
 

@@ -2,11 +2,8 @@
 Custom template tags for displaying tour navigation
 """
 from django import template
-from django.template import Template
 from django.template.loader import get_template
-from django.utils.html import escape
 import json
-from pprint import pprint
 from tour.api import TourResource
 from tour.models import Tour
 
@@ -28,6 +25,10 @@ class TourNavigationNode(template.Node):
     """
     def render(self, context):
         if 'request' in context and hasattr(context['request'], 'user'):
+            # Make sure this isn't the anonymous user
+            if not context['request'].user.id:
+                return ''
+
             # Check for any tours
             tour_class = Tour.objects.get_for_user(context['request'].user)
 
@@ -40,8 +41,6 @@ class TourNavigationNode(template.Node):
                 tour_data = tour_resource.full_dehydrate(tour_bundle)
                 tour_json = tour_resource.serialize(None, tour_data, 'application/json')
                 tour_dict = json.loads(tour_json)
-
-                # Determine the highest completed step
 
                 # Set the step css classes
                 previous_steps_complete = True
@@ -64,3 +63,4 @@ class TourNavigationNode(template.Node):
             # Load the tour template and render it
             tour_template = get_template('tour/tour_navigation.html')
             return tour_template.render(context)
+        return ''

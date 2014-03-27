@@ -8,12 +8,6 @@ from tour.tests.tour_tests import BaseTourTest
 
 class ApiTest(BaseTourTest):
 
-    def login_user1(self):
-        self.client.login(username='test', password='test')
-
-    def login_user2(self):
-        self.client.login(username='test2', password='test2')
-
     def test_fetch_tour(self):
         self.login_user1()
         url = reverse('tour:api_dispatch_list', kwargs={'resource_name': 'tour', 'api_name': 'api'})
