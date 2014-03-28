@@ -1,0 +1,7 @@
+{% if tour %}
+    <div id="tour-wrap" class="tour-wrap">
+        {% for step in tour.steps %}
+            <span class="tour-item"><a href="{{ step.url }}" class="{{ step.cls }}">{{ forloop.counter }}</a></span>
+        {% endfor %}
+    </div>
+{% endif %}
