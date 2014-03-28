@@ -12,7 +12,9 @@
                 <div class="completed"></div>
             </div>
             {% for step in tour.steps %}
-                <a href="{{ step.url }}" class="tour-item-circle {{ step.cls }}"></a>
+                <a href="{{ step.url }}" class="step-circle {{ step.cls }}">
+                    <span class="step-name">{{ step.name }}</span>
+                </a>
             {% endfor %}
         </div>
         {% for step in tour.steps %}

@@ -1,16 +1,24 @@
 window.addEventListener('load', function() {
     var tourWraps = document.getElementsByClassName('tour-wrap');
     for (var i = 0; i < tourWraps.length; i++) {
-        var itemCircles = tourWraps[i].getElementsByClassName('tour-item-circle');
-        var numItems = itemCircles.length;
-        if (numItems === 0) {
+        var stepCircles = tourWraps[i].getElementsByClassName('step-circle');
+        var stepNames = tourWraps[i].getElementsByClassName('step-name');
+        var numSteps = stepCircles.length;
+        if (numSteps === 0) {
             break;
         }
+
         // Determine percentage offsets for circles
-        var increment = 100.0 / numItems;
-        for (var j = 0; j < numItems; j++) {
-            itemCircles[j].style.right = (increment * (numItems - j - 1)) + '%';
+        var increment = 100.0 / numSteps;
+        for (var j = 0; j < numSteps; j++) {
+            stepCircles[j].style.right = (increment * (numSteps - j - 1)) + '%';
+            stepNames[j].style.right = '0';
+            if (j !== numSteps - 1) {
+                var offset = -(stepNames[j].offsetWidth / 2) + (stepCircles[j].offsetWidth / 2)
+                stepNames[j].style.marginRight = offset + 'px';
+            }
         }
+
         // Find the current step
         var completedItems = tourWraps[i].getElementsByClassName('complete');
         if (completedItems.length) {
