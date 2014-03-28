@@ -17,9 +17,6 @@
                 </a>
             {% endfor %}
         </div>
-        {% for step in tour.steps %}
-            <!--<span class="tour-item"><a href="{{ step.url }}" class="{{ step.cls }}">{{ forloop.counter }}</a></span>-->
-        {% endfor %}
     </div>
     <link rel="stylesheet" href="{{ STATIC_URL }}build/tour.css" />
     <script src="{{ STATIC_URL }}src/tour/app.js"></script>
