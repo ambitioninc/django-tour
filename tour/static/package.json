@@ -1,0 +1,23 @@
+{
+  "name": "tour",
+  "version": "0.0.1",
+  "scripts": {
+    "test": "grunt test",
+    "build": "grunt build",
+    "watch": "grunt watch"
+  },
+  "dependencies": {
+    "grunt-cli": "^0.1.13",
+    "grunt": "^0.4.2",
+    "grunt-contrib-stylus": "^0.13.2",
+    "grunt-contrib-uglify": "^0.4.0"
+  },
+  "devDependencies": {
+    "grunt-contrib-jasmine": "^0.5.3",
+    "grunt-contrib-watch": "^0.5.3",
+    "grunt-contrib-jshint": "^0.8.0",
+    "grunt-jscs-checker": "^0.4.1",
+    "grunt-jsonlint": "^1.0.4",
+    "grunt-template-jasmine-istanbul": "^0.2.6"
+  }
+}

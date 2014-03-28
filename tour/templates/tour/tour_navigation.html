@@ -1,7 +1,24 @@
 {% if tour %}
-    <div id="tour-wrap" class="tour-wrap">
+    <div class="tour-wrap">
+        <div class="tour-name">
+            {% for step in tour.steps %}
+                {% if step.current %}
+                    {{ step.name }}
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="tour-bar-wrap hidden">
+            <div class="tour-bar">
+                <div class="completed"></div>
+            </div>
+            {% for step in tour.steps %}
+                <a href="{{ step.url }}" class="tour-item-circle {{ step.cls }}"></a>
+            {% endfor %}
+        </div>
         {% for step in tour.steps %}
-            <span class="tour-item"><a href="{{ step.url }}" class="{{ step.cls }}">{{ forloop.counter }}</a></span>
+            <!--<span class="tour-item"><a href="{{ step.url }}" class="{{ step.cls }}">{{ forloop.counter }}</a></span>-->
         {% endfor %}
     </div>
+    <link rel="stylesheet" href="{{ STATIC_URL }}build/tour.css" />
+    <script src="{{ STATIC_URL }}src/tour/app.js"></script>
 {% endif %}

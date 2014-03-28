@@ -1,0 +1,73 @@
+.tour-wrap {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 50%;
+    height: 50px;
+    z-index: 50000;
+
+    .tour-name {
+        margin: 0 0 12px 0;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .tour-bar-wrap {
+        position: relative;
+        height: 20px;
+
+        &.hidden {
+            visibility: hidden;
+        }
+
+        .tour-bar {
+            background-color: #ccc;
+            height: 4px;
+            font-size: 1px;
+            overflow: hidden;
+            border-radius: 4px;
+
+            .completed {
+                width: 0;
+                height: 100%;
+                background-color: #3f424e;
+            }
+        }
+
+        a.tour-item-circle {
+            position: absolute;
+            top: -3 px;
+            color: #ccc;
+            border-radius: 50%;
+            width: 10px;
+            height: 10px;
+            overflow: hidden;
+            background-color: gray;
+
+            &.current {
+                border: 2px solid blue;
+            }
+
+            &.current, .complete, .available {
+                &:hover {
+                    border: 2px solid blue;
+                }
+            }
+
+            &.incomplete {
+
+                &.unavailable {
+                    cursor: default;
+                }
+            }
+
+            &.complete {
+                background-color: #3f424e;
+            }
+
+            &.current {
+
+            }
+        }
+    }
+}
