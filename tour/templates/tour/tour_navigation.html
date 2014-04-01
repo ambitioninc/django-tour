@@ -1,7 +1,26 @@
 {% if tour %}
-    <div id="tour-wrap" class="tour-wrap">
-        {% for step in tour.steps %}
-            <span class="tour-item"><a href="{{ step.url }}" class="{{ step.cls }}">{{ forloop.counter }}</a></span>
-        {% endfor %}
+    <div class="tour-wrap">
+        <div class="tour-name">
+            {% for step in tour.steps %}
+                {% if step.current %}
+                    {{ step.name }}
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="tour-bar-wrap hidden">
+            <div class="tour-bar">
+                <div class="completed"></div>
+            </div>
+            {% for step in tour.steps %}
+                <a href="{{ step.url }}" class="step-circle {{ step.cls }}">
+                    <span class="step-name">{{ step.name }}</span>
+                </a>
+            {% endfor %}
+        </div>
     </div>
+    <link rel="stylesheet" href="{{ STATIC_URL }}tour/build/tour.css" />
+    <script src="{{ STATIC_URL }}tour/src/tour/tour.js"></script>
+    <script>
+        (new window.DjangoTour()).run();
+    </script>
 {% endif %}

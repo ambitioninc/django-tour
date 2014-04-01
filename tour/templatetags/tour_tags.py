@@ -48,6 +48,7 @@ class TourNavigationNode(template.Node):
                     cls = ''
                     if step_dict['url'] in context['request'].path:
                         cls += 'current '
+                        step_dict['current'] = True
                     if not previous_steps_complete:
                         cls += 'incomplete unavailable '
                         step_dict['url'] = '#'
