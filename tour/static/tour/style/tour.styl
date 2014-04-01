@@ -1,0 +1,81 @@
+.tour-wrap {
+    padding: 20px;
+
+    .hidden {
+        visibility: hidden;
+    }
+
+    .tour-name {
+        margin: 0 0 12px 0;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .tour-bar-wrap {
+        position: relative;
+        height: 20px;
+
+        .tour-bar {
+            background-color: #D9DDE2;
+            height: 4px;
+            font-size: 1px;
+            overflow: hidden;
+            border-radius: 4px;
+
+            .completed {
+                width: 0;
+                height: 100%;
+                background-color: #534472;
+            }
+        }
+
+        a.step-circle {
+            position: absolute;
+            top: -3px;
+            color: #ccc;
+            border-radius: 50%;
+            width: 10px;
+            height: 10px;
+            background-color: #D9DDE2;
+
+            &.current.complete {
+                border: 2px solid #534472;
+            }
+
+            &.current, .complete, .available {
+                &:hover {
+                    border: 2px solid #4195C2;
+                }
+            }
+
+            &.incomplete {
+
+                &.unavailable {
+                    cursor: default;
+                }
+            }
+
+            &.complete {
+                background-color: #534472;
+            }
+
+            .step-name {
+                visibility: hidden;
+                position: absolute;
+                top: -30px;
+                padding: 2px 6px;
+                border-radius: 6px;
+                background-color: #4195C2;
+                color: white;
+                white-space: nowrap;
+                font-size: 12px;
+            }
+
+            &:hover {
+                .step-name {
+                    visibility: visible;
+                }
+            }
+        }
+    }
+}

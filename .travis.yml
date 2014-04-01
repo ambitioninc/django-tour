@@ -13,5 +13,6 @@ before_script:
   - find . -name '*.py' -not -regex '.*/migrations/.*' -not -regex '.*/__init__.py' -exec pyflakes '{}' \;
   - psql -c 'CREATE DATABASE tour;' -U postgres
 script:
+  - (cd tour/static/tour && npm install && npm test)
   - coverage run --source='tour' --branch --omit='tour/migrations/*' setup.py test
   - coverage report --fail-under=100 --show-missing
