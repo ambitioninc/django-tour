@@ -62,6 +62,3 @@
         }
     };
 })();
-
-var tour = new window.DjangoTour();
-tour.run();
