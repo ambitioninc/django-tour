@@ -46,7 +46,7 @@ class TourNavigationNode(template.Node):
                 previous_steps_complete = True
                 for step_dict in tour_dict['steps']:
                     cls = ''
-                    if step_dict['url'] in context['request'].path:
+                    if step_dict['url'] == context['request'].path:
                         cls += 'current '
                         step_dict['current'] = True
                     if not previous_steps_complete:
