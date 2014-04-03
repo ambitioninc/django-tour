@@ -1,2 +1,4 @@
 include README.md
 include LICENSE
+recursive-include tour/static/tour/build *
+recursive-include tour/templates *
