@@ -48,7 +48,7 @@ module.exports = function(grunt) {
     jasmineSrc = srcFiles;
     jasmineSpecs = testFiles;
     npmTasks.push('grunt-jscs-checker');
-    uglifyFiles['build/tour'] = srcFiles;
+    uglifyFiles['build/tour.js'] = srcFiles;
     uglifyFiles['.tmp/tests.js'] = testFiles;
     testTasks.push('jscs');
 

@@ -16,7 +16,7 @@ A single tour can be assigned to any number of users, and the completion of the 
 To install Django Tour:
 
 ```shell
-pip install git+https://github.com/ambitioninc/django-tour.git@0.1
+pip install git+https://github.com/ambitioninc/django-tour.git
 ```
 
 Add Django Tour to your `INSTALLED_APPS` to get started:
@@ -34,7 +34,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.contenttypes',
-    'user_guide',
+    'tour',
 )
 ```
 
