@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from django.template import Template, Context
-import re
 from tour.tests.mocks import MockTour, MockRequest, MockStep1
 from tour.tests.tour_tests import BaseTourTest
 
