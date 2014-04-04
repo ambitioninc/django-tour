@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
+from mock import patch
 from tour.exceptions import MissingStepClass, MissingTourClass
 
 from tour.models import Tour, Step, TourStatus
@@ -44,7 +45,8 @@ class TourTest(BaseTourTest):
         """
         Verifies that the base step is never complete
         """
-        self.assertFalse(BaseStep(None).is_complete(self.test_user))
+        step = Step(name=BaseStep.name, url=BaseStep.get_url())
+        self.assertFalse(BaseStep(step).is_complete(self.test_user))
 
     def test_exceptions(self):
         """
@@ -234,3 +236,30 @@ class TourTest(BaseTourTest):
         self.assertIsNone(Tour.objects.get_next_url(self.test_user))
         MockTour.add_user(self.test_user)
         self.assertEqual('mock1', Tour.objects.get_next_url(self.test_user))
+
+    def test_updates(self):
+        """
+        Verifies that when tour or step data are updated, their records get updated as well.
+        Also verifies that when steps of a tour change, the db reflects that
+        """
+        # create tour and add user
+        MockTour.add_user(self.test_user)
+
+        # change the name
+        MockTour.name = 'Changed Tour Name'
+
+        # fetch the tour like it is going to be displayed
+        tour_class = Tour.objects.get_for_user(self.test_user)
+
+        # the tour name should have been changed
+        self.assertEqual(tour_class.tour.name, MockTour.name)
+
+        # change a step name
+        MockStep1.name = 'Changed Step Name'
+        with patch('tour.tests.mocks.MockStep1.get_url') as mock_get_url:
+            mock_get_url.return_value = 'different_url'
+
+            # load the tour
+            tour_class = Tour.objects.get_for_user(self.test_user)
+            self.assertEqual(tour_class.current_step_class.step.name, MockStep1.name)
+            self.assertEqual(tour_class.current_step_class.step.url, MockStep1.get_url())

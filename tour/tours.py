@@ -13,6 +13,12 @@ class BaseStep(object):
     def __init__(self, step):
         self.step = step
 
+        # Sync up data
+        if self.name != self.step.name or self.__class__.get_url() != self.step.url:
+            self.step.name = self.name
+            self.step.url = self.__class__.get_url()
+            self.step.save()
+
     @classmethod
     def get_url(cls):
         """
@@ -62,6 +68,11 @@ class BaseTour(object):
     def __init__(self, tour):
         self.current_step_class = None
         self.tour = tour
+
+        # Sync up data
+        if self.name != self.tour.name:
+            self.tour.name = self.name
+            self.tour.save()
 
     @classmethod
     def create(cls):
@@ -134,12 +145,15 @@ class BaseTour(object):
         """
         Checks the state of the steps to see if they are all complete
         """
+        self.current_step_class = None
+
         # Check the state of all steps
         for step in self.tour.get_steps():
             step_class = step.load_step_class()
-            if step_class.is_complete(user=user) is False:
+            if self.current_step_class is None and step_class.is_complete(user=user) is False:
                 self.current_step_class = step_class
-                return False
+        if self.current_step_class:
+            return False
         self.mark_complete(user=user)
         return True
 
