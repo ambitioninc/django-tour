@@ -38,23 +38,25 @@
             height: 10px;
             background-color: #D9DDE2;
 
+            &.current {
+                border: 2px solid #4195C2;
+                top: -4px;
+                margin-right: -2px;
+            }
 
             &.current.available {
                 background-color: #534472;
             }
 
-            &.current.complete {
-                border: 2px solid #534472;
-            }
-
-            &.current, &.complete, &.available {
+            &.complete, &.available {
                 &:hover {
                     border: 2px solid #4195C2;
+                    top: -4px;
+                    margin-right: -2px;
                 }
             }
 
             &.incomplete {
-
                 &.unavailable {
                     cursor: default;
                 }

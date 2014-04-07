@@ -46,7 +46,7 @@
                 }
                 if ('current' in classMap && 'available' in classMap) {
                     currentStep = stepCircles[i];
-                } else if ('incomplete' in classMap && 'available' in classMap && i > 0) {
+                } else if ('incomplete' in classMap && 'available' in classMap && i > 0 && !currentStep) {
                     currentStep = stepCircles[i];
                 }
             }
