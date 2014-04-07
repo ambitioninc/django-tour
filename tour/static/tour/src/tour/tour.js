@@ -20,6 +20,7 @@
             // Query for the circle and name elements
             var stepCircles = tourWrap.getElementsByClassName('step-circle');
             var stepNames = tourWrap.getElementsByClassName('step-name');
+            var circleWidth = 0;
             var numSteps = stepCircles.length;
             if (numSteps === 0) {
                 return;
@@ -29,6 +30,7 @@
             var increment = 100.0 / numSteps;
             for (var i = 0; i < numSteps; i++) {
                 stepCircles[i].style.right = (increment * (numSteps - i - 1)) + '%';
+                circleWidth = stepCircles[i].offsetWidth;
                 stepNames[i].style.right = '0';
                 if (i !== numSteps - 1) {
                     var offset = -(stepNames[i].offsetWidth / 2) + (stepCircles[i].offsetWidth / 2);
@@ -42,7 +44,7 @@
                 var completedItem = completedItems[completedItems.length - 1];
                 var completedDiv = tourWrap.getElementsByClassName('completed')[0];
                 var right = parseFloat(completedItem.style.right);
-                completedDiv.style.width = (100.0 - right) + '%';
+                completedDiv.style.width = (100.0 - right - (circleWidth / 2)) + '%';
             }
 
             // Unhide the bar
