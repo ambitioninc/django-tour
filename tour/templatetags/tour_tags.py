@@ -58,7 +58,7 @@ class TourNavigationNode(template.Node):
                         cls += 'incomplete available '
                         previous_steps_complete = False
                     else:
-                        cls += 'complete '
+                        cls += 'complete available '
                     step_dict['cls'] = cls
 
                 context['tour'] = tour_dict

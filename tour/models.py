@@ -41,6 +41,7 @@ class Tour(models.Model):
 
     objects = TourManager()
 
+    # TODO: look into callable field app
     def load_tour_class(self):
         """
         Imports and returns the tour class.
