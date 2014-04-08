@@ -43,7 +43,7 @@ module.exports = function(grunt) {
 
     buildTasks.push('buildSrc');
     jsonFiles.push('.jshintrc');
-    
+
     //settings and tasks for to projects using ECMAScript5
     jasmineSrc = srcFiles;
     jasmineSpecs = testFiles;
@@ -62,7 +62,7 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('buildSrc', ['uglify']);
-    
+
     //tasks for JavaScript projects
     testTasks.push('build');
     testTasks.push('jasmine');
@@ -74,7 +74,7 @@ module.exports = function(grunt) {
             }
         }
     });
-    
+
     //settings common to projects using Stylus
     var stylusFiles = {};
     var styleFiles = ['style/*.styl', 'style/**/*.styl'];
@@ -101,7 +101,7 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('buildStyle', ['stylus']);
-    
+
     if (isDev) {
         //tasks for developing with JavaScript
         npmTasks.push('grunt-contrib-jasmine');
@@ -117,7 +117,7 @@ module.exports = function(grunt) {
                     template: require('grunt-template-jasmine-istanbul'),
                     templateOptions: {
                         coverage: '.tmp/coverage.json',
-                        report: [{type: 'text-summary'}],
+                        report: [{type: 'text-summary'}, {type: 'html'}],
                         thresholds: {
                             lines: 100,
                             statements: 100,
@@ -143,7 +143,7 @@ module.exports = function(grunt) {
         });
 
         grunt.registerTask('test', testTasks);
-        
+
         //always merge watch in development environments
         npmTasks.push('grunt-contrib-watch');
         merge(gruntConfig, {
