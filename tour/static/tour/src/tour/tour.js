@@ -44,6 +44,7 @@
                 for (var j = 0; j < classNames.length; j++) {
                     classMap[classNames[j]] = true;
                 }
+
                 if ('current' in classMap && 'available' in classMap) {
                     currentStep = stepCircles[i];
                 } else if ('incomplete' in classMap && 'available' in classMap && i > 0 && !currentStep) {
