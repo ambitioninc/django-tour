@@ -1,11 +1,7 @@
 {% if tour %}
     <div class="tour-wrap">
         <div class="tour-name">
-            {% for step in tour.steps %}
-                {% if step.current %}
-                    {{ step.name }}
-                {% endif %}
-            {% endfor %}
+            {{ tour.display_name }}
         </div>
         <div class="tour-bar-wrap hidden">
             <div class="tour-bar">

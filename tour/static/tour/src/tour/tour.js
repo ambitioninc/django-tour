@@ -20,6 +20,7 @@
             // Query for the circle and name elements
             var stepCircles = tourWrap.getElementsByClassName('step-circle');
             var stepNames = tourWrap.getElementsByClassName('step-name');
+            var circleWidth = 0;
             var numSteps = stepCircles.length;
             if (numSteps === 0) {
                 return;
@@ -27,22 +28,39 @@
 
             // Determine percentage offsets for circles
             var increment = 100.0 / numSteps;
+            var currentStep = null;
             for (var i = 0; i < numSteps; i++) {
                 stepCircles[i].style.right = (increment * (numSteps - i - 1)) + '%';
+                circleWidth = stepCircles[i].offsetWidth;
                 stepNames[i].style.right = '0';
                 if (i !== numSteps - 1) {
                     var offset = -(stepNames[i].offsetWidth / 2) + (stepCircles[i].offsetWidth / 2);
                     stepNames[i].style.marginRight = offset + 'px';
                 }
+
+                // Check if this is the current step
+                var classMap = {};
+                var classNames = stepCircles[i].className.split(' ');
+                for (var j = 0; j < classNames.length; j++) {
+                    classMap[classNames[j]] = true;
+                }
+
+                if ('current' in classMap && 'available' in classMap) {
+                    currentStep = stepCircles[i];
+                } else if ('incomplete' in classMap && 'available' in classMap && i > 0 && !currentStep) {
+                    currentStep = stepCircles[i];
+                }
             }
 
             // Find the current step
-            var completedItems = tourWrap.getElementsByClassName('complete');
-            if (completedItems.length) {
-                var completedItem = completedItems[completedItems.length - 1];
-                var completedDiv = tourWrap.getElementsByClassName('completed')[0];
-                var right = parseFloat(completedItem.style.right);
+            var completedDiv = tourWrap.getElementsByClassName('completed')[0],
+                right = 0;
+
+            // Set the width of the current progress bar
+            if (currentStep) {
+                right = parseFloat(currentStep.style.right);
                 completedDiv.style.width = (100.0 - right) + '%';
+                completedDiv.style.marginLeft = -(circleWidth / 2) + 'px';
             }
 
             // Unhide the bar

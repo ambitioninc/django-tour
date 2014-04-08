@@ -44,11 +44,13 @@ class TourNavigationNode(template.Node):
 
                 # Set the step css classes
                 previous_steps_complete = True
+                tour_dict['display_name'] = tour.name
                 for step_dict in tour_dict['steps']:
                     cls = ''
-                    if step_dict['url'] in context['request'].path:
+                    if step_dict['url'] == context['request'].path:
                         cls += 'current '
                         step_dict['current'] = True
+                        tour_dict['display_name'] = step_dict['name']
                     if not previous_steps_complete:
                         cls += 'incomplete unavailable '
                         step_dict['url'] = '#'
@@ -56,7 +58,7 @@ class TourNavigationNode(template.Node):
                         cls += 'incomplete available '
                         previous_steps_complete = False
                     else:
-                        cls += 'complete '
+                        cls += 'complete available '
                     step_dict['cls'] = cls
 
                 context['tour'] = tour_dict
