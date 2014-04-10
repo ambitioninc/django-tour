@@ -1,9 +1,12 @@
 """
 Custom template tags for displaying tour navigation
 """
+from copy import deepcopy
+import json
+
 from django import template
 from django.template.loader import get_template
-import json
+
 from tour.api import TourResource
 from tour.models import Tour
 
@@ -27,7 +30,9 @@ def tour_navigation(context, **kwargs):
         if not tour_class and always_show:
             tour_class = Tour.objects.get_recent_tour(context['request'].user)
         if always_show:
-            context['request'].GET['always_show'] = True
+            mutable_get = deepcopy(context['request'].GET)
+            mutable_get['always_show'] = True
+            context['request'].GET = mutable_get
 
         # Add tour to the template if it exists
         if tour_class:
