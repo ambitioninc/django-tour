@@ -13,7 +13,7 @@ class TourManager(models.Manager):
         Checks if a tour exists for a user and returns the instantiated tour object
         """
         queryset = self
-        tours = queryset.filter(tourstatus__user=user, tourstatus__complete=False)
+        tours = queryset.filter(tourstatus__user=user, tourstatus__complete=False).order_by('-tourstatus__create_time')
         for tour in tours:
             tour_class = tour.load_tour_class()
             if tour_class.is_complete(user=user) is False:
@@ -24,10 +24,15 @@ class TourManager(models.Manager):
         """
         Convenience method to get the next url for the specified user
         """
-        tour = self.get_for_user(user)
-        if not tour:
-            return None
-        return tour.get_next_url()
+        tour_class = self.get_for_user(user)
+        if not tour_class:
+            # get the most recently completed tour url
+            tour = self.filter(tourstatus__user=user).order_by('-tourstatus__complete_time').first()
+            if tour:
+                tour_class = tour.load_tour_class()
+        if tour_class:
+            return tour_class.get_next_url()
+        return None
 
 
 class Tour(models.Model):
@@ -38,7 +43,7 @@ class Tour(models.Model):
     name = models.CharField(max_length=128, unique=True)
     tour_class = models.CharField(max_length=128, unique=True)
     users = models.ManyToManyField(User, through='TourStatus')
-    complete_url = models.CharField(max_length=128)
+    complete_url = models.CharField(max_length=128, blank=True, null=True, default=None)
 
     objects = TourManager()
 
@@ -88,3 +93,5 @@ class TourStatus(models.Model):
     tour = models.ForeignKey(Tour)
     user = models.ForeignKey(User)
     complete = models.BooleanField(default=False)
+    create_time = models.DateTimeField(auto_now_add=True)
+    complete_time = models.DateTimeField(null=True, blank=True, default=None)

@@ -10,13 +10,29 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'Tour.complete_url'
         db.add_column(u'tour_tour', 'complete_url',
-                      self.gf('django.db.models.fields.CharField')(default='', max_length=128),
+                      self.gf('django.db.models.fields.CharField')(default=None, max_length=128, null=True, blank=True),
+                      keep_default=False)
+
+        # Adding field 'TourStatus.create_time'
+        db.add_column(u'tour_tourstatus', 'create_time',
+                      self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, default=datetime.datetime(2014, 4, 10, 0, 0), blank=True),
+                      keep_default=False)
+
+        # Adding field 'TourStatus.complete_time'
+        db.add_column(u'tour_tourstatus', 'complete_time',
+                      self.gf('django.db.models.fields.DateTimeField')(default=None, null=True, blank=True),
                       keep_default=False)
 
 
     def backwards(self, orm):
         # Deleting field 'Tour.complete_url'
         db.delete_column(u'tour_tour', 'complete_url')
+
+        # Deleting field 'TourStatus.create_time'
+        db.delete_column(u'tour_tourstatus', 'create_time')
+
+        # Deleting field 'TourStatus.complete_time'
+        db.delete_column(u'tour_tourstatus', 'complete_time')
 
 
     models = {
@@ -67,7 +83,7 @@ class Migration(SchemaMigration):
         },
         u'tour.tour': {
             'Meta': {'object_name': 'Tour'},
-            'complete_url': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
+            'complete_url': ('django.db.models.fields.CharField', [], {'default': 'None', 'max_length': '128', 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '128'}),
             'tour_class': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '128'}),
@@ -76,6 +92,8 @@ class Migration(SchemaMigration):
         u'tour.tourstatus': {
             'Meta': {'object_name': 'TourStatus'},
             'complete': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'complete_time': ('django.db.models.fields.DateTimeField', [], {'default': 'None', 'null': 'True', 'blank': 'True'}),
+            'create_time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'tour': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['tour.Tour']"}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})

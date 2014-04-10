@@ -1,3 +1,4 @@
+import datetime
 from .models import Tour, Step, TourStatus
 from tour.exceptions import MissingStepClass, MissingTourClass
 
@@ -64,14 +65,16 @@ class BaseTour(object):
     name = None
     steps = []
     parent_tour = None
+    complete_url = None
 
     def __init__(self, tour):
         self.current_step_class = None
         self.tour = tour
 
         # Sync up data
-        if self.name != self.tour.name:
+        if self.name != self.tour.name or self.complete_url != self.tour.complete_url:
             self.tour.name = self.name
+            self.tour.complete_url = self.complete_url
             self.tour.save()
 
     @classmethod
@@ -88,7 +91,8 @@ class BaseTour(object):
 
         instance, created = Tour.objects.get_or_create(
             tour_class=tour_class, defaults=dict(
-                name=cls.name
+                name=cls.name,
+                complete_url=cls.complete_url,
             )
         )
 
@@ -133,7 +137,7 @@ class BaseTour(object):
         """
         if self.current_step_class:
             return self.current_step_class.step.url
-        return None
+        return self.complete_url
 
     def get_url_list(self):
         """
@@ -161,7 +165,9 @@ class BaseTour(object):
         """
         Marks the tour record as complete and saves it.
         """
+        complete_time = datetime.datetime.utcnow()
         if user:
-            self.tour.tourstatus_set.all().filter(tour=self.tour, user=user).update(complete=True)
+            self.tour.tourstatus_set.all().filter(tour=self.tour, user=user).update(
+                complete=True, complete_time=complete_time)
         else:
-            self.tour.tourstatus_set.all().filter(tour=self.tour).update(complete=True)
+            self.tour.tourstatus_set.all().filter(tour=self.tour).update(complete=True, complete_time=complete_time)
