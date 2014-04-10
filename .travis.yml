@@ -7,10 +7,9 @@ env:
   matrix:
     - DJANGO=1.6.2
 install:
-  - pip install -q coverage pep8 pyflakes Django==$DJANGO
+  - pip install -q coverage flake8 Django==$DJANGO
 before_script:
-  - pep8 . --max-line-length=120 --exclude=migrations
-  - find . -name '*.py' -not -regex '.*/migrations/.*' -not -regex '.*/__init__.py' -exec pyflakes '{}' \;
+  - flake8 . --max-line-length=120 --max-complexity=10 --exclude='env,migrations,*.egg'
   - psql -c 'CREATE DATABASE tour;' -U postgres
 script:
   - (cd tour/static/tour && npm install && npm test)
