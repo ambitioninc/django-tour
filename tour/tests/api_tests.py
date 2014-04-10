@@ -46,6 +46,13 @@ class ApiTest(BaseTourTest):
         objects = json_response.get('objects')
         self.assertEqual(0, len(objects))
 
+        # make sure it can be returned with a param
+        response = self.client.get(url, data={'always_show': 1})
+        self.assertEqual(200, response.status_code)
+        json_response = json.loads(response.content)
+        objects = json_response.get('objects')
+        self.assertEqual(1, len(objects))
+
         # Log in as user 2 and make sure there is still a tour
         self.login_user2()
         MockStep1.complete = False

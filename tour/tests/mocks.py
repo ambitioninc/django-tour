@@ -8,6 +8,7 @@ class MockRequest(object):
     def __init__(self, user=None, path=None):
         self.user = user
         self.path = path
+        self.GET = {}
 
 
 class MockStep(BaseStep):
