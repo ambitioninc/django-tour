@@ -20,16 +20,20 @@ class TourManager(models.Manager):
                 return tour_class
         return None
 
+    def get_recent_tour(self, user):
+        tour = self.filter(tourstatus__user=user).order_by(
+            'tourstatus__complete', '-tourstatus__complete_time').first()
+        if tour:
+            return tour.load_tour_class()
+        return None
+
     def get_next_url(self, user):
         """
         Convenience method to get the next url for the specified user
         """
         tour_class = self.get_for_user(user)
         if not tour_class:
-            # get the most recently completed tour url
-            tour = self.filter(tourstatus__user=user).order_by('-tourstatus__complete_time').first()
-            if tour:
-                tour_class = tour.load_tour_class()
+            tour_class = self.get_recent_tour(user)
         if tour_class:
             return tour_class.get_next_url()
         return None
