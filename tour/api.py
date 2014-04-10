@@ -39,6 +39,10 @@ class TourResource(ModelResource):
         Provides serialization and flattening of the tour's steps
         """
         bundle = super(TourResource, self).dehydrate(bundle)
+        if not bundle.request.GET.get('always_show'):
+            is_complete = bundle.obj.load_tour_class().is_complete(user=bundle.request.user)
+            if is_complete:
+                return None
         steps = bundle.obj.get_steps()
         serialized = []
         step_resource = StepResource()
@@ -67,5 +71,8 @@ class TourResource(ModelResource):
         Automatically filter the tour resource to return incomplete tours for a specific user
         """
         base_object_list = super(TourResource, self).apply_filters(request, applicable_filters)
-        base_object_list = base_object_list.filter(tourstatus__user=request.user)
+        if request.GET.get('always_show'):
+            base_object_list = base_object_list.filter(tourstatus__user=request.user)
+        else:
+            base_object_list = base_object_list.filter(tourstatus__user=request.user, tourstatus__complete=False)
         return base_object_list
