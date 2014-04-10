@@ -30,3 +30,6 @@ _SpecRunner.html
 html-report/
 
 .yo-rc.json
+
+.coverage
+htmlcov

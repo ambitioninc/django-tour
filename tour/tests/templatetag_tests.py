@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.template import Template, Context
-from tour.tests.mocks import MockTour, MockRequest, MockStep1
+from tour.tests.mocks import MockTour, MockRequest, MockStep1, MockStep2
 from tour.tests.tour_tests import BaseTourTest
 
 
@@ -27,7 +27,7 @@ class TemplateTagTest(BaseTourTest):
         })
         self.assertEqual('', test_template.render(context).strip())
 
-        # Verifies that the tour template does get rendered if a user has a tour
+        # Verifies that the tour template gets rendered if a user has a tour
         MockTour.add_user(self.test_user)
         test_template = Template('{% load tour_tags %}{% tour_navigation %}')
         context = Context({
@@ -47,6 +47,21 @@ class TemplateTagTest(BaseTourTest):
             'request': MockRequest(self.test_user, 'mock2'),
         })
         self.assertTrue('complete' in test_template.render(context))
+
+        # Make sure no tour gets rendered when it is complete
+        MockStep2.complete = True
+        test_template = Template('{% load tour_tags %}{% tour_navigation %}')
+        context = Context({
+            'request': MockRequest(self.test_user, '/mock/path'),
+        })
+        self.assertTrue('tour-wrap' not in test_template.render(context))
+
+        # Makes sure that the tour does get displayed if the always_show flag is on
+        test_template = Template('{% load tour_tags %}{% tour_navigation always_show=True %}')
+        context = Context({
+            'request': MockRequest(self.test_user, '/mock/path'),
+        })
+        self.assertTrue('tour-wrap' in test_template.render(context))
 
         # Verify no errors for missing request object
         context = Context({})
