@@ -38,6 +38,7 @@ class Tour(models.Model):
     name = models.CharField(max_length=128, unique=True)
     tour_class = models.CharField(max_length=128, unique=True)
     users = models.ManyToManyField(User, through='TourStatus')
+    complete_url = models.CharField(max_length=128)
 
     objects = TourManager()
 
