@@ -147,6 +147,10 @@ class TourTest(BaseTourTest):
         tour_class = Tour.objects.get_for_user(self.test_user)
         self.assertIsNone(tour_class)
 
+        # Make sure we can get the most recent tour
+        tour_class = Tour.objects.get_recent_tour(self.test_user)
+        self.assertIsNotNone(tour_class)
+
         # Make sure a second tour will be added
         MockTour.add_user(self.test_user)
         self.assertEqual(2, TourStatus.objects.all().count())

@@ -26,6 +26,8 @@ def tour_navigation(context, **kwargs):
         tour_class = Tour.objects.get_for_user(context['request'].user)
         if not tour_class and always_show:
             tour_class = Tour.objects.get_recent_tour(context['request'].user)
+        if always_show:
+            context['request'].GET['always_show'] = True
 
         # Add tour to the template if it exists
         if tour_class:
