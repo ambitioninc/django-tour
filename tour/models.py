@@ -12,6 +12,8 @@ class TourManager(models.Manager):
         """
         Checks if a tour exists for a user and returns the instantiated tour object
         """
+        if not user.pk:
+            return None
         queryset = self
         tours = queryset.filter(tourstatus__user=user, tourstatus__complete=False).order_by('-tourstatus__create_time')
         for tour in tours:
@@ -21,6 +23,8 @@ class TourManager(models.Manager):
         return None
 
     def get_recent_tour(self, user):
+        if not user.pk:
+            return None
         tour = self.filter(tourstatus__user=user).order_by(
             'tourstatus__complete', '-tourstatus__complete_time').first()
         if tour:
