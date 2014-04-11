@@ -46,6 +46,7 @@ def tour_navigation(context, **kwargs):
 
             # Set the step css classes
             previous_steps_complete = True
+            is_after_current = False
             tour_dict['display_name'] = tour.name
             for step_dict in tour_dict['steps']:
                 cls = ''
@@ -53,12 +54,15 @@ def tour_navigation(context, **kwargs):
                     cls += 'current '
                     step_dict['current'] = True
                     tour_dict['display_name'] = step_dict['name']
+                    is_after_current = True
                 if not previous_steps_complete:
                     cls += 'incomplete unavailable '
                     step_dict['url'] = '#'
                 elif not step_dict['complete']:
                     cls += 'incomplete available '
                     previous_steps_complete = False
+                elif is_after_current:
+                    cls += 'available '
                 else:
                     cls += 'complete available '
                 step_dict['cls'] = cls
