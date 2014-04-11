@@ -19,12 +19,24 @@ class ViewTest(BaseTourTest):
 
         MockTour.add_user(self.test_user)
 
+        # request page that isn't in the tour before tour is complete
+        mock_request = MockRequest(self.test_user, 'mock-fake', {})
+        mock_view = MockView(request=mock_request)
+        response = mock_view.dispatch(mock_request)
+        self.assertEqual(200, response.status_code)
+
         # do request to second step when we should be on first
         mock_request = MockRequest(self.test_user, 'mock2', {})
         mock_view = MockView(request=mock_request)
         response = mock_view.dispatch(mock_request)
         self.assertEqual(302, response.status_code)
         self.assertEqual('mock1', response.url)
+
+        # do request to first step
+        mock_request = MockRequest(self.test_user, 'mock1', {})
+        mock_view = MockView(request=mock_request)
+        response = mock_view.dispatch(mock_request)
+        self.assertEqual(200, response.status_code)
 
         # complete tour and try to go to first step
         MockStep1.complete = True
@@ -35,7 +47,7 @@ class ViewTest(BaseTourTest):
         self.assertEqual(302, response.status_code)
         self.assertEqual('mock_complete1', response.url)
 
-        # request page that isn't in the tour
+        # request page that isn't in the tour when tour is complete
         mock_request = MockRequest(self.test_user, 'mock-fake', {})
         mock_view = MockView(request=mock_request)
         response = mock_view.dispatch(mock_request)
