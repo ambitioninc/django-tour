@@ -67,6 +67,21 @@ class TemplateTagTest(BaseTourTest):
         context = Context({})
         self.assertEqual('', test_template.render(context))
 
+    def test_step_classes(self):
+        self.login_user1()
+        MockTour.add_user(self.test_user)
+
+        # Test that the second step has an available class but not a complete class
+        MockStep1.complete = True
+        MockStep2.complete = True
+        test_template = Template('{% load tour_tags %}{% tour_navigation always_show=True %}')
+        context = Context({
+            'request': MockRequest(self.test_user, 'mock1'),
+        })
+        rendered_content = self.render_and_clean(test_template, context)
+        expected_str = '<a href="mock2" class="step-circle available ">'
+        self.assertTrue(expected_str in rendered_content)
+
     def test_tour_title(self):
         """
         Makes sure the appropriate title gets displayed for the tour title
