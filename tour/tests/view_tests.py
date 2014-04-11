@@ -11,6 +11,12 @@ class ViewTest(BaseTourTest):
         Verifies that a user can't go to steps out of order and can't go to other steps
         after the tour is complete
         """
+        # do request when there should be no tour
+        mock_request = MockRequest(self.test_user, 'mock2', {})
+        mock_view = MockView(request=mock_request)
+        response = mock_view.dispatch(mock_request)
+        self.assertEqual(200, response.status_code)
+
         MockTour.add_user(self.test_user)
 
         # do request to second step when we should be on first
@@ -28,3 +34,9 @@ class ViewTest(BaseTourTest):
         response = mock_view.dispatch(mock_request)
         self.assertEqual(302, response.status_code)
         self.assertEqual('mock_complete1', response.url)
+
+        # request page that isn't in the tour
+        mock_request = MockRequest(self.test_user, 'mock-fake', {})
+        mock_view = MockView(request=mock_request)
+        response = mock_view.dispatch(mock_request)
+        self.assertEqual(200, response.status_code)

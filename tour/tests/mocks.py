@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.views.generic import View
 from tour.tours import BaseStep, BaseTour
 from tour.views import TourStepMixin
@@ -7,7 +8,8 @@ mock_null_value = None
 
 
 class MockView(TourStepMixin, View):
-    pass
+    def get(self, request):
+        return HttpResponse('ok')
 
 
 class MockRequest(object):
