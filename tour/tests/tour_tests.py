@@ -119,8 +119,8 @@ class TourTest(BaseTourTest):
         Verifies that a user can be assigned a tour only once
         Tests fetching an active tour for a user
         """
-        self.assertIsNone(Tour.objects.get_for_user(None))
-        self.assertIsNone(Tour.objects.get_recent_tour(None))
+        self.assertIsNone(Tour.objects.get_for_user(User()))
+        self.assertIsNone(Tour.objects.get_recent_tour(User()))
         self.assertIsNone(Tour.objects.get_for_user(self.test_user))
 
         # Create a single tour
