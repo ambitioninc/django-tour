@@ -1,14 +1,21 @@
+from django.views.generic import View
 from tour.tours import BaseStep, BaseTour
+from tour.views import TourStepMixin
 
 
 mock_null_value = None
 
 
+class MockView(TourStepMixin, View):
+    pass
+
+
 class MockRequest(object):
-    def __init__(self, user=None, path=None):
+    def __init__(self, user=None, path=None, params=None, method=None):
         self.user = user
         self.path = path
-        self.GET = {}
+        self.method = method or 'get'
+        self.GET = params or {}
 
 
 class MockStep(BaseStep):
@@ -73,6 +80,7 @@ class NoUrlStep(MockStep):
 class MockTour(BaseTour):
     tour_class = 'tour.tests.mocks.MockTour'
     name = 'Mock Tour'
+    complete_url = 'mock_complete1'
     steps = [
         MockStep1,
         MockStep2,
@@ -82,6 +90,7 @@ class MockTour(BaseTour):
 class MockTour2(BaseTour):
     tour_class = 'tour.tests.mocks.MockTour2'
     name = 'Mock Tour 2'
+    complete_url = 'mock_complete2'
     parent_tour = MockTour
     steps = [
         MockStep3,
@@ -92,6 +101,7 @@ class MockTour2(BaseTour):
 class MockTour3(BaseTour):
     tour_class = 'tour.tests.mocks.MockTour3'
     name = 'Mock Tour 3'
+    complete_url = 'mock_complete3'
     steps = [
         EmptyStep
     ]
@@ -99,6 +109,7 @@ class MockTour3(BaseTour):
 
 class MockTour4(BaseTour):
     name = 'Mock Tour 4'
+    complete_url = 'mock_complete4'
     steps = [
         EmptyStep
     ]
@@ -107,6 +118,7 @@ class MockTour4(BaseTour):
 class CompleteTour(BaseTour):
     tour_class = 'tour.tests.mocks.CompleteTour'
     name = 'Complete Tour'
+    complete_url = 'mock_complete'
     steps = [
         MockStep1
     ]

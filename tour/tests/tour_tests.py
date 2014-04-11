@@ -213,7 +213,7 @@ class TourTest(BaseTourTest):
         tour_class = Tour.objects.get().load_tour_class()
         self.assertTrue(tour_class.is_complete())
         url = tour_class.get_next_url()
-        self.assertIsNone(url)
+        self.assertEqual('mock_complete', url)
 
     def test_url_list(self):
         """
