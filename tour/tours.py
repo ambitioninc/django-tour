@@ -165,9 +165,13 @@ class BaseTour(object):
         """
         Marks the tour record as complete and saves it.
         """
-        complete_time = datetime.datetime.utcnow()
         if user:
-            self.tour.tourstatus_set.all().filter(tour=self.tour, user=user).update(
-                complete=True, complete_time=complete_time)
+            queryset = self.tour.tourstatus_set.all().filter(tour=self.tour, user=user)
         else:
-            self.tour.tourstatus_set.all().filter(tour=self.tour).update(complete=True, complete_time=complete_time)
+            queryset = self.tour.tourstatus_set.all().filter(tour=self.tour)
+        # Check if there are any incomplete records
+        if queryset.count():
+            complete_time = datetime.datetime.utcnow()
+            queryset.update(complete=True, complete_time=complete_time)
+            return True
+        return False
