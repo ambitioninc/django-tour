@@ -31,23 +31,27 @@
             if (numSteps > 1) {
                 increment = 100.0 / (numSteps - 1);
             }
+
+            // Loop through each step to find the current one and calculate offsets
             var currentStep = null;
             for (var i = 0; i < numSteps; i++) {
                 stepCircles[i].style.left = (increment * i) + '%';
                 circleWidth = stepCircles[i].offsetWidth;
 
+                // Set the offset of all steps that are not the first or last
                 if (i > 0 && i < numSteps - 1) {
                     var offset = -(stepNames[i].offsetWidth / 2) + (stepCircles[i].offsetWidth / 2);
                     stepNames[i].style.marginLeft = offset + 'px';
                 }
 
-                // Check if this is the current step
+                // Build a map of class names to determine which is the current step
                 var classMap = {};
                 var classNames = stepCircles[i].className.split(' ');
                 for (var j = 0; j < classNames.length; j++) {
                     classMap[classNames[j]] = true;
                 }
 
+                // Check if this is the current step
                 if ('current' in classMap && 'available' in classMap) {
                     currentStep = stepCircles[i];
                 } else if ('incomplete' in classMap && 'available' in classMap && i > 0 && !currentStep) {
@@ -63,7 +67,6 @@
             if (currentStep) {
                 left = parseFloat(currentStep.style.left);
                 completedDiv.style.width = left + '%';
-//                completedDiv.style.marginLeft = -(circleWidth / 2) + 'px';
             }
 
             // Unhide the bar
