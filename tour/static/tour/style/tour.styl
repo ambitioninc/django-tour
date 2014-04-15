@@ -1,7 +1,7 @@
-circle-size = 14px;
-circle-size-half = 7px;
-circle-size-active = 30px;
-circle-size-active-half = 15px;
+circle-size = 13px;
+circle-size-half = 6.5px;
+circle-size-hover = 19px;
+circle-size-hover-half = 9.5px;
 
 
 .tour-wrap {
@@ -23,11 +23,11 @@ circle-size-active-half = 15px;
 
         .tour-bar {
             background-color: #D9DDE2;
-            height: 4px;
+            height: 5px;
             font-size: 1px;
             overflow: hidden;
             position: relative;
-            top: -2px;
+            top: -3px;
 
             .completed {
                 width: 0;
@@ -46,22 +46,24 @@ circle-size-active-half = 15px;
             background-color: #D9DDE2;
             margin-left: -(circle-size-half);
 
-            &.current {
-                /*border: 2px solid #4195C2;*/
-                /*top: -4px;*/
-                /*margin-right: -2px;*/
+            &.available {
+                &:hover {
+                    border: 3px solid #4195C2;
+                    margin-left: -(circle-size-hover-half)
+                    top: -(circle-size-hover-half);
+                }
+            }
+
+            &.complete, &.current {
+                &:hover {
+                    border: 3px solid #534472;
+                    margin-left: -(circle-size-hover-half)
+                    top: -(circle-size-hover-half);
+                }
             }
 
             &.current.available {
                 background-color: #534472;
-            }
-
-            &.complete, &.available {
-                &:hover {
-                    /*border: 2px solid #4195C2;*/
-                    /*top: -4px;*/
-                    /*margin-right: -2px;*/
-                }
             }
 
             &.incomplete {
@@ -113,6 +115,12 @@ circle-size-active-half = 15px;
             &:first-child {
                 margin-left: 0;
 
+                &.available, &.complete, &.current {
+                    &:hover {
+                        margin-left: 0;
+                    }
+                }
+
                 .step-name {
                     left: 0;
                     border-radius: 6px 6px 6px 0;
@@ -125,7 +133,13 @@ circle-size-active-half = 15px;
             }
 
             &:last-child {
-                margin-left: -(circle-size-half);
+                margin-left: -(circle-size);
+
+                &.available, &.complete, &.current {
+                    &:hover {
+                        margin-left: -(circle-size-hover);
+                    }
+                }
 
                 .step-name {
                     right: 0;

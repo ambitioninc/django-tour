@@ -35,10 +35,7 @@
             for (var i = 0; i < numSteps; i++) {
                 stepCircles[i].style.left = (increment * i) + '%';
                 circleWidth = stepCircles[i].offsetWidth;
-//                stepNames[i].style.left = '0';
-//                if (i === numSteps - 1) {
-//                    stepCircles[i].style.marginLeft = -(stepCircles[i].offsetWidth) + 'px';
-//                }
+
                 if (i > 0 && i < numSteps - 1) {
                     var offset = -(stepNames[i].offsetWidth / 2) + (stepCircles[i].offsetWidth / 2);
                     stepNames[i].style.marginLeft = offset + 'px';
