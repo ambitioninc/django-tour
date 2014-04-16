@@ -104,19 +104,23 @@ class SecondStep(BaseStep):
 Next, set up the tour class to contain these steps. The tour should inherit from `BaseTour` and a few attributes
 need to be set.
 
-#### `tour_class`
+##### `tour_class`
 The python path to the tour class
 
-#### `name`
+##### `name`
 The display name that will be used in the tour UI
 
-#### `steps`
+##### `steps`
 A list of step classes in the order they need to be completed
+
+##### `complete_url`
+The url that will be returned when calling `get_next_url` after the tour is considered complete
 
 ```python
 class ExampleTour(BaseTour):
     tour_class = 'path.to.ExampleTour'
     name = 'Example Tour'
+    complete_url = '/page/finished/'
     steps = [
         FirstStep,
         SecondStep,
@@ -144,3 +148,19 @@ This will create a `TourStatus` instance linking `user` to the `ExampleTour` wit
 In your django template all you need to do is load the tour tags with `{% load tour_tags %}` then put the
 `{% tour_navigation %}` tag where it should appear. When the user loads the template, a check will be performed
 to see if the user has any incomplete tours. If there is a tour, the navigation will be displayed.
+
+If it makes sense to always display the tour navigation even after the final step is complete, then pass the
+always_show argument to the tour tag `{% tour_navigation always_show=True %}`
+
+## Restricting View Access
+
+If the order of step completion is important for a tour, the view mixin `TourStepMixin` can be added to any
+django view that is part of the tour. The step is identified by the url of the view and if the user
+tries to access a page out of order, they will be redirected to the first incomplete step of the tour.
+Once a tour has been completed, the user will also be prevented from visiting other steps that inherit
+form the `TourStepMixin` in the tour.
+
+```python
+class MyView(TourStepMixin, TemplateView):
+    """ view config """
+```
