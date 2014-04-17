@@ -104,6 +104,9 @@ class TourTest(BaseTourTest):
         tour_class = Tour.objects.get_for_user(self.test_user)
         tour_class.mark_complete(user=self.test_user)
         self.assertEqual(1, TourStatus.objects.filter(complete=False).count())
+        # make sure marking complete again returns false
+        self.assertFalse(tour_class.mark_complete(user=self.test_user))
+
         MockTour.add_user(self.test_user)
         self.assertEqual(2, TourStatus.objects.filter(complete=False).count())
         tour_class = Tour.objects.get().load_tour_class()
@@ -116,6 +119,8 @@ class TourTest(BaseTourTest):
         Verifies that a user can be assigned a tour only once
         Tests fetching an active tour for a user
         """
+        self.assertIsNone(Tour.objects.get_for_user(User()))
+        self.assertIsNone(Tour.objects.get_recent_tour(User()))
         self.assertIsNone(Tour.objects.get_for_user(self.test_user))
 
         # Create a single tour
@@ -213,7 +218,7 @@ class TourTest(BaseTourTest):
         tour_class = Tour.objects.get().load_tour_class()
         self.assertTrue(tour_class.is_complete())
         url = tour_class.get_next_url()
-        self.assertIsNone(url)
+        self.assertEqual('mock_complete', url)
 
     def test_url_list(self):
         """

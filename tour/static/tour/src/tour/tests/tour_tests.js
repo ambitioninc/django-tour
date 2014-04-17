@@ -56,7 +56,7 @@ describe('DjangoTour', function() {
 
         var wrap = document.getElementsByClassName('tour-wrap')[0];
         var completeBar = wrap.getElementsByClassName('completed')[0];
-        expect(completeBar.style.width).toBe('100%');
+        expect(completeBar.style.width).toBe('0%');
 
         document.body.removeChild(container);
     });
@@ -126,7 +126,7 @@ describe('DjangoTour', function() {
 
         var wrap = document.getElementsByClassName('tour-wrap')[0];
         var completeBar = wrap.getElementsByClassName('completed')[0];
-        expect(completeBar.style.width).toBe('25%');
+        expect(completeBar.style.width).toBe('0%');
         document.body.removeChild(container);
     });
 
@@ -143,14 +143,11 @@ describe('DjangoTour', function() {
             '       <a href="/step/one/" class="step-circle complete available ">',
             '           <span class="step-name">Step One</span>',
             '       </a>',
-            '       <a href="/step/two/" class="step-circle complete available ">',
+            '       <a href="/step/two/" class="step-circle current incomplete available">',
             '           <span class="step-name">Step Two</span>',
             '       </a>',
-            '       <a href="/step/three/" class="step-circle current incomplete available">',
+            '       <a href="/step/three/" class="step-circle incomplete unavailable">',
             '           <span class="step-name">Step Three</span>',
-            '       </a>',
-            '       <a href="/step/four/" class="step-circle incomplete unavailable">',
-            '           <span class="step-name">Step Four</span>',
             '       </a>',
             '   </div>',
             '</div>',
@@ -164,7 +161,7 @@ describe('DjangoTour', function() {
 
         var wrap = document.getElementsByClassName('tour-wrap')[0];
         var completeBar = wrap.getElementsByClassName('completed')[0];
-        expect(completeBar.style.width).toBe('75%');
+        expect(completeBar.style.width).toBe('50%');
         document.body.removeChild(container);
     });
 
@@ -181,14 +178,11 @@ describe('DjangoTour', function() {
             '       <a href="/step/one/" class="step-circle complete available ">',
             '           <span class="step-name">Step One</span>',
             '       </a>',
-            '       <a href="/step/two/" class="step-circle complete available ">',
+            '       <a href="/step/two/" class="step-circle incomplete available">',
             '           <span class="step-name">Step Two</span>',
             '       </a>',
-            '       <a href="/step/three/" class="step-circle incomplete available">',
+            '       <a href="/step/three/" class="step-circle incomplete unavailable">',
             '           <span class="step-name">Step Three</span>',
-            '       </a>',
-            '       <a href="/step/four/" class="step-circle incomplete unavailable">',
-            '           <span class="step-name">Step Four</span>',
             '       </a>',
             '   </div>',
             '</div>',
@@ -202,7 +196,7 @@ describe('DjangoTour', function() {
 
         var wrap = document.getElementsByClassName('tour-wrap')[0];
         var completeBar = wrap.getElementsByClassName('completed')[0];
-        expect(completeBar.style.width).toBe('75%');
+        expect(completeBar.style.width).toBe('50%');
         document.body.removeChild(container);
     });
 

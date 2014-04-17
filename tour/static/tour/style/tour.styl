@@ -1,3 +1,9 @@
+circle-size = 13px;
+circle-size-half = 6.5px;
+circle-size-hover = 19px;
+circle-size-hover-half = 9.5px;
+
+
 .tour-wrap {
     padding: 20px;
 
@@ -6,7 +12,7 @@
     }
 
     .tour-name {
-        margin: 0 0 12px 0;
+        margin: 0 0 24px 0;
         font-weight: bold;
         font-size: 16px;
     }
@@ -17,10 +23,11 @@
 
         .tour-bar {
             background-color: #D9DDE2;
-            height: 4px;
+            height: 5px;
             font-size: 1px;
             overflow: hidden;
-            border-radius: 4px;
+            position: relative;
+            top: -3px;
 
             .completed {
                 width: 0;
@@ -31,29 +38,32 @@
 
         a.step-circle {
             position: absolute;
-            top: -3px;
+            top: -(circle-size-half);
             color: #ccc;
             border-radius: 50%;
-            width: 10px;
-            height: 10px;
+            width: circle-size;
+            height: circle-size;
             background-color: #D9DDE2;
+            margin-left: -(circle-size-half);
 
-            &.current {
-                border: 2px solid #4195C2;
-                top: -4px;
-                margin-right: -2px;
+            &.available {
+                &:hover {
+                    border: 3px solid #4195C2;
+                    margin-left: -(circle-size-hover-half)
+                    top: -(circle-size-hover-half);
+                }
+            }
+
+            &.complete, &.current {
+                &:hover {
+                    border: 3px solid #534472;
+                    margin-left: -(circle-size-hover-half)
+                    top: -(circle-size-hover-half);
+                }
             }
 
             &.current.available {
                 background-color: #534472;
-            }
-
-            &.complete, &.available {
-                &:hover {
-                    border: 2px solid #4195C2;
-                    top: -4px;
-                    margin-right: -2px;
-                }
             }
 
             &.incomplete {
@@ -69,13 +79,31 @@
             .step-name {
                 visibility: hidden;
                 position: absolute;
-                top: -30px;
-                padding: 2px 6px;
+                top: -43px;
+                padding: 10px;
                 border-radius: 6px;
                 background-color: #4195C2;
                 color: white;
                 white-space: nowrap;
-                font-size: 12px;
+                font-family: 'HalisRLight',helvetica,arial,verdana,sans-serif;
+                text-transform: uppercase;
+                font-size: 10px;
+                font-weight: bold;
+
+                &:after {
+                    top: 100%;
+                    left: 50%;
+                    border: solid transparent;
+                    content: " ";
+                    height: 0;
+                    width: 0;
+                    position: absolute;
+                    pointer-events: none;
+                    background-color: transparent;
+                    border-top-color: #4195C2;
+                    border-width: 6px;
+                    margin-left: -6px;
+                }
             }
 
             &:hover {
@@ -83,6 +111,48 @@
                     visibility: visible;
                 }
             }
+
+            &:first-child {
+                margin-left: 0;
+
+                &.available, &.complete, &.current {
+                    &:hover {
+                        margin-left: 0;
+                    }
+                }
+
+                .step-name {
+                    left: 0;
+                    border-radius: 6px 6px 6px 0;
+
+                    &:after {
+                        left: 0;
+                        margin-left: 0;
+                    }
+                }
+            }
+
+            &:last-child {
+                margin-left: -(circle-size);
+
+                &.available, &.complete, &.current {
+                    &:hover {
+                        margin-left: -(circle-size-hover);
+                    }
+                }
+
+                .step-name {
+                    right: 0;
+                    border-radius: 6px 6px 0 6px;
+
+                    &:after {
+                        right: 0;
+                        left: auto;
+                        margin-left: 0;
+                    }
+                }
+            }
+
         }
     }
 }

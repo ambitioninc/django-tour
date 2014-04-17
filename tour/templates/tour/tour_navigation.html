@@ -7,11 +7,13 @@
             <div class="tour-bar">
                 <div class="completed"></div>
             </div>
-            {% for step in tour.steps %}
-                <a href="{{ step.url }}" class="step-circle {{ step.cls }}">
-                    <span class="step-name">{{ step.name }}</span>
-                </a>
-            {% endfor %}
+            <span class="tour-step-wrap">
+                {% for step in tour.steps %}
+                    <a href="{{ step.url }}" class="step-circle {{ step.cls }}">
+                        <span class="step-name">{{ forloop.counter }}. {{ step.name }}</span>
+                    </a>
+                {% endfor %}
+            </span>
         </div>
     </div>
     <link rel="stylesheet" href="{{ STATIC_URL }}tour/build/tour.css" />
