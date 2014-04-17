@@ -13,8 +13,7 @@ from tour.models import Tour
 
 register = template.Library()
 
-# TODO: rename this node
-class TestNode(template.Node):
+class TourNavNode(template.Node):
     def __init__(self, always_show=False):
         self.always_show = always_show
 
@@ -83,6 +82,6 @@ class TestNode(template.Node):
 @register.simple_tag(takes_context=True)
 def tour_navigation(context, **kwargs):
     """
-    TODO
+    Tag to render the tour nav node
     """
-    return TestNode(always_show=kwargs.get('always_show', False)).render(context)
+    return TourNavNode(always_show=kwargs.get('always_show', False)).render(context)
