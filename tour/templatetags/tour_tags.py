@@ -13,6 +13,7 @@ from tour.models import Tour
 
 register = template.Library()
 
+
 class TourNavNode(template.Node):
     def __init__(self, always_show=False):
         self.always_show = always_show
