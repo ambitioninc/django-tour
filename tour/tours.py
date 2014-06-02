@@ -24,22 +24,6 @@ class BaseTour(object):
         # self.current_step_class = None
         self.tour = tour
 
-    def get_next_url(self):
-        """
-        Gets the next url based on the current step. The tour should always be fetched with
-        Tour.objects.get_for_user so the is_complete method is called and the current step class
-        gets set.
-        """
-        if self.current_step_class:
-            return self.current_step_class.step.url
-        return self.complete_url
-
-    def get_url_list(self):
-        """
-        Returns a flattened list of urls of all steps contained in the tour.
-        """
-        return [step.url for step in self.tour.get_steps() if step.url]
-
     def get_steps(self, parent_step=None):
         """
         Returns the steps in order based on if there is a parent or not
@@ -51,6 +35,22 @@ class BaseTour(object):
             all_steps.append(step)
             all_steps.extend(self.get_steps(step))
         return all_steps
+
+    def get_url_list(self):
+        """
+        Returns a flattened list of urls of all steps contained in the tour.
+        """
+        return [step.url for step in self.tour.load_tour_class().get_steps() if step.url]
+
+    def get_next_url(self):
+        """
+        Gets the next url based on the current step. The tour should always be fetched with
+        Tour.objects.get_for_user so the is_complete method is called and the current step class
+        gets set.
+        """
+        if self.current_step_class:
+            return self.current_step_class.step.url
+        return self.complete_url
 
     def add_user(self, user):
         """

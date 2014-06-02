@@ -23,13 +23,17 @@ class BaseTourTest(TestCase):
             Tour, display_name='Mock Tour', name='tour1', complete_url='mock_complete1',
             tour_class='tour.tests.mocks.MockTour')
         self.step1 = G(
-            Step, step_class='tour.tests.mocks.MockStep1', display_name='Mock Step 1', name='mock1', url='mock1')
+            Step, step_class='tour.tests.mocks.MockStep1', display_name='Mock Step 1', name='mock1',
+            url='mock1', parent_step=None)
         self.step2 = G(
-            Step, step_class='tour.tests.mocks.MockStep2', display_name='Mock Step 2', name='mock2', url='mock2')
+            Step, step_class='tour.tests.mocks.MockStep2', display_name='Mock Step 2', name='mock2',
+            url='mock2', parent_step=None)
         self.step3 = G(
-            Step, step_class='tour.tests.mocks.MockStep3', display_name='Mock Step 3', name='mock3', url='mock3')
+            Step, step_class='tour.tests.mocks.MockStep3', display_name='Mock Step 3', name='mock3',
+            url='mock3', parent_step=None)
         self.step4 = G(
-            Step, step_class='tour.tests.mocks.MockStep4', display_name='Mock Step 4', name='mock4', url='mock4')
+            Step, step_class='tour.tests.mocks.MockStep4', display_name='Mock Step 4', name='mock4',
+            url='mock4', parent_step=None)
 
     def login_user1(self):
         self.client.login(username='test', password='test')
@@ -38,7 +42,7 @@ class BaseTourTest(TestCase):
         self.client.login(username='test2', password='test2')
 
 
-class BaseTourTest(BaseTourTest):
+class TourTest(BaseTourTest):
     """
     Tests the functionality of the Tour and Step classes
     """
@@ -47,6 +51,34 @@ class BaseTourTest(BaseTourTest):
         Verifies that the tour object is properly set when loaded
         """
         self.assertEqual(self.tour1.load_tour_class().tour, self.tour1)
+
+    def test_get_steps_flat(self):
+        """
+        Verifies that the steps are loaded in the correct order
+        """
+        self.step1.tour = self.tour1
+        self.step1.save()
+        self.step2.tour = self.tour1
+        self.step2.save()
+        expected_steps = [self.step1, self.step2]
+        self.assertEqual(expected_steps, self.tour1.load_tour_class().get_steps())
+
+    def test_get_steps_nested(self):
+        """
+        Verifies that the nested steps are loaded correctly
+        """
+        pass
+
+    def test_get_url_list(self):
+        """
+        Verifies that the tour returns the correct step url list
+        """
+        self.step1.tour = self.tour1
+        self.step1.save()
+        self.step2.tour = self.tour1
+        self.step2.save()
+        expected_url_list = ['mock1', 'mock2']
+        self.assertEqual(expected_url_list, self.tour1.load_tour_class().get_url_list())
 
     def test_empty_url(self):
         """
