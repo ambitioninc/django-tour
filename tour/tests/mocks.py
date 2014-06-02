@@ -20,73 +20,34 @@ class MockRequest(object):
         self.GET = params or {}
 
 
-class MockStep(BaseStep):
-    complete = False
-
-    def is_complete(self, user=None):
-        return self.complete
-
-
-class MockStep1(MockStep):
-    step_class = 'tour.tests.mocks.MockStep1'
-    name = 'Mock Step 1'
-    complete = False
-
-    @classmethod
-    def get_url(cls):
-        return 'mock1'
-
-
-class MockStep2(MockStep):
-    step_class = 'tour.tests.mocks.MockStep2'
-    name = 'Mock Step 2'
-    complete = False
-
-    @classmethod
-    def get_url(cls):
-        return 'mock2'
-
-
-class MockStep3(MockStep):
-    step_class = 'tour.tests.mocks.MockStep3'
-    name = 'Mock Step 3'
-    complete = False
-    parent_step = MockStep1
-
-    @classmethod
-    def get_url(cls):
-        return 'mock3'
-
-
-class MockStep4(MockStep):
-    step_class = 'tour.tests.mocks.MockStep4'
-    name = 'Mock Step 4'
-    complete = False
-    parent_step = MockStep1
-
-    @classmethod
-    def get_url(cls):
-        return 'mock4'
-
-
-class EmptyStep(MockStep):
+class MockStep1(BaseStep):
     pass
 
 
-class NoUrlStep(MockStep):
+class MockStep2(BaseStep):
+    pass
+
+
+class MockStep3(BaseStep):
+    pass
+
+
+class MockStep4(BaseStep):
+    pass
+
+
+class EmptyStep(BaseStep):
+    pass
+
+
+class NoUrlStep(BaseStep):
     step_class = 'tour.tests.mocks.NoUrlStep'
     name = 'No Url Step'
     complete = False
 
 
 class MockTour(BaseTour):
-    tour_class = 'tour.tests.mocks.MockTour'
-    name = 'Mock Tour'
-    complete_url = 'mock_complete1'
-    steps = [
-        MockStep1,
-        MockStep2,
-    ]
+    pass
 
 
 class MockTour2(BaseTour):

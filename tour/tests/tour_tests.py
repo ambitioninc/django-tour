@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
+from django_dynamic_fixture import G
 from mock import patch
 from tour.exceptions import MissingStepClass, MissingTourClass
 
@@ -15,9 +16,20 @@ class BaseTourTest(TestCase):
     """
     def setUp(self):
         super(BaseTourTest, self).setUp()
-        self.reset_mock_tour_states()
         self.test_user = User.objects.create_user('test', 'test@gmail.com', 'test')
         self.test_user2 = User.objects.create_user('test2', 'test2@gmail.com', 'test2')
+
+        self.tour1 = G(
+            Tour, display_name='Mock Tour', name='tour1', complete_url='mock_complete1',
+            tour_class='tour.tests.mocks.MockTour')
+        self.step1 = G(
+            Step, step_class='tour.tests.mocks.MockStep1', display_name='Mock Step 1', name='mock1', url='mock1')
+        self.step2 = G(
+            Step, step_class='tour.tests.mocks.MockStep2', display_name='Mock Step 2', name='mock2', url='mock2')
+        self.step3 = G(
+            Step, step_class='tour.tests.mocks.MockStep3', display_name='Mock Step 3', name='mock3', url='mock3')
+        self.step4 = G(
+            Step, step_class='tour.tests.mocks.MockStep4', display_name='Mock Step 4', name='mock4', url='mock4')
 
     def login_user1(self):
         self.client.login(username='test', password='test')
@@ -25,16 +37,17 @@ class BaseTourTest(TestCase):
     def login_user2(self):
         self.client.login(username='test2', password='test2')
 
-    def reset_mock_tour_states(self):
-        mock_steps = [MockStep1, MockStep2, MockStep3, MockStep4]
-        for mock_step in mock_steps:
-            mock_step.complete = False
 
-
-class TourTest(BaseTourTest):
+class BaseTourTest(BaseTourTest):
     """
     Tests the functionality of the Tour and Step classes
     """
+    def test_init(self):
+        """
+        Verifies that the tour object is properly set when loaded
+        """
+        self.assertEqual(self.tour1.load_tour_class().tour, self.tour1)
+
     def test_empty_url(self):
         """
         Verifies that the base step does not return a url
