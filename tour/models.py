@@ -49,30 +49,18 @@ class Tour(models.Model):
     and fetching the steps in the correct order.
     """
     name = models.CharField(max_length=128, unique=True)
+    display_name = models.CharField(max_length=128)
     tour_class = models.CharField(max_length=128, unique=True)
     users = models.ManyToManyField(User, through='TourStatus')
     complete_url = models.CharField(max_length=128, blank=True, null=True, default=None)
 
     objects = TourManager()
 
-    # TODO: look into callable field app
     def load_tour_class(self):
         """
         Imports and returns the tour class.
         """
         return import_string(self.tour_class)(self)
-
-    def get_steps(self, parent_step=None):
-        """
-        Returns the steps in order based on if there is a parent or not
-        TODO: optimize this
-        """
-        all_steps = []
-        steps = self.step_set.all().filter(parent_step=parent_step).order_by('id')
-        for step in steps:
-            all_steps.append(step)
-            all_steps += self.get_steps(step)
-        return all_steps
 
 
 class Step(models.Model):
@@ -81,6 +69,7 @@ class Step(models.Model):
     in the class specified in step_class
     """
     name = models.CharField(max_length=128, unique=True)
+    display_name = models.CharField(max_length=128)
     url = models.CharField(max_length=128, null=True, blank=True)
     tour = models.ForeignKey(Tour)
     parent_step = models.ForeignKey('self', null=True, related_name='child_steps')
