@@ -59,6 +59,8 @@ class Tour(models.Model):
     def load_tour_class(self):
         """
         Imports and returns the tour class.
+        :return: The tour class instance determined by `tour_class`
+        :rtype: BaseTour
         """
         return import_string(self.tour_class)(self)
 

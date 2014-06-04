@@ -1,5 +1,5 @@
 import datetime
-from .models import Tour, Step, TourStatus
+from .models import TourStatus
 
 
 class BaseStep(object):
@@ -54,6 +54,25 @@ class BaseTour(object):
         """
         return [step.url for step in self.tour.load_tour_class().get_steps() if step.url]
 
+    def add_user(self, user):
+        """
+        Adds a relationship record for the user
+        """
+        instance, created = TourStatus.objects.get_or_create(tour=self.tour, user=user, complete=False)
+        return instance
+
+    def mark_complete(self, user):
+        """
+        Marks the tour status record as complete
+        """
+        tour_status = self.tour.tourstatus_set.all().filter(tour=self.tour, user=user, complete=False).first()
+        if tour_status:
+            tour_status.complete = True
+            tour_status.complete_time = datetime.datetime.utcnow()
+            tour_status.save()
+            return True
+        return False
+
     def get_next_url(self):
         """
         Gets the next url based on the current step. The tour should always be fetched with
@@ -63,13 +82,6 @@ class BaseTour(object):
         if self.current_step_class:
             return self.current_step_class.step.url
         return self.complete_url
-
-    def add_user(self, user):
-        """
-        Adds a relationship record for the user
-        """
-        instance, created = TourStatus.objects.get_or_create(tour=self.tour, user=user, complete=False)
-        return instance
 
     def is_complete(self, user=None):
         """
@@ -86,18 +98,3 @@ class BaseTour(object):
             return False
         self.mark_complete(user=user)
         return True
-
-    def mark_complete(self, user=None):
-        """
-        Marks the tour record as complete and saves it.
-        """
-        if user:
-            queryset = self.tour.tourstatus_set.all().filter(tour=self.tour, user=user, complete=False)
-        else:
-            queryset = self.tour.tourstatus_set.all().filter(tour=self.tour, complete=False)
-        # Check if there are any incomplete records
-        if queryset.count():
-            complete_time = datetime.datetime.utcnow()
-            queryset.update(complete=True, complete_time=complete_time)
-            return True
-        return False
