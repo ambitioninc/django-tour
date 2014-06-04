@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django_dynamic_fixture import G
+from mock import patch
 
 from tour.models import Tour, Step, TourStatus
 
@@ -32,6 +33,9 @@ class BaseTourTest(TestCase):
         self.step4 = G(
             Step, step_class='tour.tests.mocks.MockStep4', display_name='Mock Step 4', name='mock4',
             url='mock4', parent_step=None, sort_order=3)
+        self.step5 = G(
+            Step, step_class='tour.tours.BaseStep', display_name='Mock Step 5', name='mock5',
+            url=None, parent_step=None, sort_order=4)
 
     def login_user1(self):
         self.client.login(username='test', password='test')
@@ -82,7 +86,7 @@ class TourTest(BaseTourTest):
         """
         Verifies that the tour returns the correct step url list
         """
-        self.tour1.steps.add(self.step1, self.step2)
+        self.tour1.steps.add(self.step1, self.step5, self.step2)
         expected_url_list = ['mock1', 'mock2']
         self.assertEqual(expected_url_list, self.tour1.load_tour_class().get_url_list())
 
@@ -132,6 +136,79 @@ class TourTest(BaseTourTest):
         tour1_class.add_user(self.test_user)
         # make sure there are 5 records
         self.assertEqual(5, TourStatus.objects.count())
+
+    @patch('tour.tests.mocks.MockStep4.is_complete')
+    @patch('tour.tests.mocks.MockStep3.is_complete')
+    @patch('tour.tests.mocks.MockStep2.is_complete')
+    @patch('tour.tests.mocks.MockStep1.is_complete')
+    def test_get_current_step(
+            self, mock_step1_is_complete, mock_step2_is_complete, mock_step3_is_complete, mock_step4_is_complete):
+        """
+        Verifies that the tour class returns the first incomplete step
+        :type mock_step1_is_complete: Mock
+        :type mock_step2_is_complete: Mock
+        :type mock_step3_is_complete: Mock
+        :type mock_step4_is_complete: Mock
+        """
+        mock_step1_is_complete.return_value = False
+        mock_step2_is_complete.return_value = False
+        mock_step3_is_complete.return_value = False
+        mock_step4_is_complete.return_value = False
+
+        self.tour1.steps.add(self.step1, self.step2)
+        self.step1.steps.add(self.step3, self.step4)
+        tour1_class = self.tour1.load_tour_class()
+
+        self.assertEqual(self.step1, tour1_class.get_current_step())
+
+        mock_step1_is_complete.return_value = True
+        mock_step3_is_complete.return_value = True
+        self.assertEqual(self.step4, tour1_class.get_current_step())
+
+        mock_step4_is_complete.return_value = True
+        mock_step2_is_complete.return_value = True
+        self.assertIsNone(tour1_class.get_current_step())
+
+    @patch('tour.tests.mocks.MockStep4.is_complete')
+    @patch('tour.tests.mocks.MockStep3.is_complete')
+    @patch('tour.tests.mocks.MockStep2.is_complete')
+    @patch('tour.tests.mocks.MockStep1.is_complete')
+    def test_get_next_url(
+            self, mock_step1_is_complete, mock_step2_is_complete, mock_step3_is_complete, mock_step4_is_complete):
+        """
+        Verifies that the url is returned for the current step
+        :type mock_step1_is_complete: Mock
+        :type mock_step2_is_complete: Mock
+        :type mock_step3_is_complete: Mock
+        :type mock_step4_is_complete: Mock
+        """
+        mock_step1_is_complete.return_value = False
+        mock_step2_is_complete.return_value = False
+        mock_step3_is_complete.return_value = False
+        mock_step4_is_complete.return_value = False
+
+        self.step5.sort_order = 1
+        self.step5.save()
+        self.step2.sort_order = 3
+        self.step2.save()
+
+        self.tour1.steps.add(self.step1, self.step2, self.step5)
+        self.step5.steps.add(self.step3, self.step4)
+        tour1_class = self.tour1.load_tour_class()
+
+        self.assertEqual('mock1', tour1_class.get_next_url())
+
+        mock_step1_is_complete.return_value = True
+        self.assertEqual('mock3', tour1_class.get_next_url())
+
+        mock_step3_is_complete.return_value = True
+        self.assertEqual('mock4', tour1_class.get_next_url())
+
+        mock_step4_is_complete.return_value = True
+        self.assertEqual('mock2', tour1_class.get_next_url())
+
+        mock_step2_is_complete.return_value = True
+        self.assertEqual('mock_complete1', tour1_class.get_next_url())
 
     # def test_empty_url(self):
     #     """

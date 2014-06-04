@@ -1,5 +1,6 @@
 import datetime
-from .models import TourStatus
+
+from tour.models import TourStatus
 
 
 class BaseStep(object):
@@ -13,7 +14,7 @@ class BaseStep(object):
         """
         This is meant to be implemented in subclasses. This checks conditions to determine if the step is complete
         """
-        return False
+        return True
 
     def get_steps(self):
         """
@@ -73,15 +74,25 @@ class BaseTour(object):
             return True
         return False
 
+    def get_current_step(self):
+        """
+        Finds the first incomplete steps and returns it
+        :return: The first incomplete step
+        :rtype: Step
+        """
+        for step in self.tour.load_tour_class().get_steps():
+            if not step.load_step_class().is_complete():
+                return step
+        return None
+
     def get_next_url(self):
         """
-        Gets the next url based on the current step. The tour should always be fetched with
-        Tour.objects.get_for_user so the is_complete method is called and the current step class
-        gets set.
+        Gets the next url based on the current step.
         """
-        if self.current_step_class:
-            return self.current_step_class.step.url
-        return self.complete_url
+        current_step = self.get_current_step()
+        if current_step:
+            return current_step.url
+        return self.tour.complete_url
 
     def is_complete(self, user=None):
         """
