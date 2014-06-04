@@ -62,6 +62,9 @@ class Tour(models.Model):
         """
         return import_string(self.tour_class)(self)
 
+    def __unicode__(self):
+        return u'{0}'.format(self.display_name)
+
 
 class Step(models.Model):
     """
@@ -71,15 +74,19 @@ class Step(models.Model):
     name = models.CharField(max_length=128, unique=True)
     display_name = models.CharField(max_length=128)
     url = models.CharField(max_length=128, null=True, blank=True)
-    tour = models.ForeignKey(Tour)
-    parent_step = models.ForeignKey('self', null=True, related_name='child_steps')
+    tour = models.ForeignKey(Tour, related_name='steps')
+    parent_step = models.ForeignKey('self', null=True, related_name='steps')
     step_class = models.CharField(max_length=128, unique=True)
+    sort_order = models.IntegerField(default=0)
 
     def load_step_class(self):
         """
         Imports and returns the step class.
         """
         return import_string(self.step_class)(self)
+
+    def __unicode__(self):
+        return u'{0}'.format(self.display_name)
 
 
 class TourStatus(models.Model):
