@@ -53,7 +53,7 @@ class BaseTour(object):
         """
         Returns a flattened list of urls of all steps contained in the tour.
         """
-        return [step.url for step in self.tour.load_tour_class().get_steps() if step.url]
+        return [step.url for step in self.get_steps() if step.url]
 
     def add_user(self, user):
         """
@@ -74,38 +74,28 @@ class BaseTour(object):
             return True
         return False
 
-    def get_current_step(self):
+    def get_current_step(self, user):
         """
         Finds the first incomplete steps and returns it
+        :param user: The django user to find the current step for
+        :type user: User
         :return: The first incomplete step
         :rtype: Step
         """
-        for step in self.tour.load_tour_class().get_steps():
-            if not step.load_step_class().is_complete():
+        for step in self.get_steps():
+            if not step.load_step_class().is_complete(user):
                 return step
         return None
 
-    def get_next_url(self):
+    def get_next_url(self, user):
         """
         Gets the next url based on the current step.
         """
-        current_step = self.get_current_step()
-        if current_step:
-            return current_step.url
-        return self.tour.complete_url
+        current_step = self.get_current_step(user)
+        return current_step.url if current_step else self.tour.complete_url
 
-    def is_complete(self, user=None):
+    def is_complete(self, user):
         """
         Checks the state of the steps to see if they are all complete
         """
-        self.current_step_class = None
-
-        # Check the state of all steps
-        for step in self.tour.get_steps():
-            step_class = step.load_step_class()
-            if self.current_step_class is None and step_class.is_complete(user=user) is False:
-                self.current_step_class = step_class
-        if self.current_step_class:
-            return False
-        self.mark_complete(user=user)
-        return True
+        return False if self.get_current_step(user) else True
