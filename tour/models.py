@@ -7,23 +7,27 @@ class TourManager(models.Manager):
     """
     Provides extra functionality for the Tour model
     """
+    def complete_tours(self, user):
+        """
+        Marks any completed tours as complete
+        """
+        tours = self.filter(tourstatus__user=user, tourstatus__complete=False)
+        for tour in tours:
+            tour_class = tour.load_tour_class()
+            if tour_class.is_complete(user):
+                tour_class.mark_complete(user)
+
     def get_for_user(self, user):
         """
         Checks if a tour exists for a user and returns the instantiated tour object
         """
-        if not user.pk:
+        self.complete_tours(user)
+        tour = self.filter(tourstatus__user=user, tourstatus__complete=False).first()
+        if not tour:
             return None
-        queryset = self
-        tours = queryset.filter(tourstatus__user=user, tourstatus__complete=False).order_by('-tourstatus__create_time')
-        for tour in tours:
-            tour_class = tour.load_tour_class()
-            if tour_class.is_complete(user=user) is False:
-                return tour_class
-        return None
+        return tour.load_tour_class()
 
     def get_recent_tour(self, user):
-        if not user.pk:
-            return None
         tour = self.filter(tourstatus__user=user).order_by(
             'tourstatus__complete', '-tourstatus__complete_time').first()
         if tour:
@@ -38,7 +42,7 @@ class TourManager(models.Manager):
         if not tour_class:
             tour_class = self.get_recent_tour(user)
         if tour_class:
-            return tour_class.get_next_url()
+            return tour_class.get_next_url(user)
         return None
 
 

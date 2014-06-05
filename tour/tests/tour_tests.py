@@ -273,20 +273,6 @@ class TourTest(BaseTourTest):
     #     MockTour.add_user(self.test_user)
     #     self.assertEqual(2, TourStatus.objects.all().count())
     #     self.assertEqual(1, TourStatus.objects.filter(complete=False).count())
-    #
-    # def test_nested_tour(self):
-    #     """
-    #     Verifies that records get created properly for nested tours
-    #     """
-    #     MockTour.create()
-    #     MockTour2.create()
-    #     self.assertEqual(4, Step.objects.all().count())
-    #     steps = list(Step.objects.all().order_by('id'))
-    #     self.assertEqual(steps[0].parent_step, None)
-    #     self.assertEqual(steps[1].parent_step, None)
-    #     self.assertEqual(steps[2].parent_step, steps[0])
-    #     self.assertEqual(steps[3].parent_step, steps[0])
-    #
 
 
 class StepTest(BaseTourTest):
