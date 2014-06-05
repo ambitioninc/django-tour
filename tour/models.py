@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-
-from tour.utils.import_string import import_string
+from django.utils.module_loading import import_by_path
 
 
 class TourManager(models.Manager):
@@ -62,7 +61,7 @@ class Tour(models.Model):
         :return: The tour class instance determined by `tour_class`
         :rtype: BaseTour
         """
-        return import_string(self.tour_class)(self)
+        return import_by_path(self.tour_class)(self)
 
     def __unicode__(self):
         return u'{0}'.format(self.display_name)
@@ -85,7 +84,7 @@ class Step(models.Model):
         """
         Imports and returns the step class.
         """
-        return import_string(self.step_class)(self)
+        return import_by_path(self.step_class)(self)
 
     def __unicode__(self):
         return u'{0}'.format(self.display_name)
