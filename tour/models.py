@@ -19,30 +19,24 @@ class TourManager(models.Manager):
 
     def get_for_user(self, user):
         """
-        Checks if a tour exists for a user and returns the instantiated tour object
+        Checks if a tour exists for a user and returns the tour instance
         """
         self.complete_tours(user)
-        tour = self.filter(tourstatus__user=user, tourstatus__complete=False).first()
-        if not tour:
-            return None
-        return tour.load_tour_class()
+        return self.filter(tourstatus__user=user, tourstatus__complete=False).first()
 
     def get_recent_tour(self, user):
-        tour = self.filter(tourstatus__user=user).order_by(
+        return self.filter(tourstatus__user=user).order_by(
             'tourstatus__complete', '-tourstatus__complete_time').first()
-        if tour:
-            return tour.load_tour_class()
-        return None
 
     def get_next_url(self, user):
         """
         Convenience method to get the next url for the specified user
         """
-        tour_class = self.get_for_user(user)
-        if not tour_class:
-            tour_class = self.get_recent_tour(user)
-        if tour_class:
-            return tour_class.get_next_url(user)
+        tour = self.get_for_user(user)
+        if not tour:
+            tour = self.get_recent_tour(user)
+        if tour:
+            return tour.load_tour_class().get_next_url(user)
         return None
 
 
