@@ -46,7 +46,7 @@ class BaseTourTest(TestCase):
 
 class TourTest(BaseTourTest):
     """
-    Tests the functionality of the Tour and Step classes
+    Tests the functionality of the BaseTour class
     """
     def test_init(self):
         """
@@ -287,3 +287,38 @@ class TourTest(BaseTourTest):
     #     self.assertEqual(steps[2].parent_step, steps[0])
     #     self.assertEqual(steps[3].parent_step, steps[0])
     #
+
+
+class StepTest(BaseTourTest):
+    """
+    Tests the functionality of the BaseStep class
+    """
+    def test_init(self):
+        """
+        Verifies that the step object is properly set when loaded
+        """
+        self.assertEqual(self.step1.load_step_class().step, self.step1)
+
+    def test_is_complete(self):
+        """
+        Verifies that a step returns true by default
+        """
+        step1_class = self.step1.load_step_class()
+        self.assertTrue(step1_class.is_complete(self.test_user))
+
+    def test_get_steps_flat(self):
+        """
+        Verifies that the steps are loaded in the correct order
+        """
+        self.step1.steps.add(self.step2, self.step3)
+        expected_steps = [self.step2, self.step3]
+        self.assertEqual(expected_steps, self.step1.load_step_class().get_steps())
+
+    def test_get_steps_nested(self):
+        """
+        Verifies that the nested steps are loaded correctly
+        """
+        self.step1.steps.add(self.step2)
+        self.step2.steps.add(self.step3, self.step4)
+        expected_steps = [self.step2, self.step3, self.step4]
+        self.assertEqual(expected_steps, self.step1.load_step_class().get_steps())
