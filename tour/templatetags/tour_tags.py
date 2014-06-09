@@ -1,6 +1,3 @@
-"""
-Custom template tags for displaying tour navigation
-"""
 from copy import deepcopy
 import json
 
@@ -18,9 +15,10 @@ class TourNavNode(template.Node):
     def __init__(self, always_show=False):
         self.always_show = always_show
 
-    def get_tour_class(self, request):
+    def get_tour(self, request):
         # Check for any tours
         tour = Tour.objects.get_for_user(request.user)
+
         if not tour and self.always_show:
             tour = Tour.objects.get_recent_tour(request.user)
         if self.always_show:
@@ -71,11 +69,16 @@ class TourNavNode(template.Node):
             if not context['request'].user.id:
                 return ''
 
-            tour_class = self.get_tour_class(context['request'])
-            context['tour'] = self.get_tour_dict(tour_class, context['request'])
+            print 'one'
+            tour = self.get_tour(context['request'])
+            if tour:
+                context['tour'] = self.get_tour_dict(tour.load_tour_class(), context['request'])
+            print 'two'
+            print context
 
             # Load the tour template and render it
             tour_template = get_template('tour/tour_navigation.html')
+            print tour_template
             return tour_template.render(context)
         return ''
 

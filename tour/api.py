@@ -43,7 +43,7 @@ class TourResource(ModelResource):
             is_complete = bundle.obj.load_tour_class().is_complete(user=bundle.request.user)
             if is_complete:
                 return None
-        steps = bundle.obj.get_steps()
+        steps = bundle.obj.load_tour_class().get_steps()
         serialized = []
         step_resource = StepResource()
         for step in steps:
