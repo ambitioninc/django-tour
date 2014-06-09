@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.template import Template, Context
 from mock import Mock, patch
-from tour.models import Test
 
 from tour.tests.tour_tests import BaseTourTest
 
@@ -78,7 +77,7 @@ class TemplateTagTest(BaseTourTest):
         context = Context({
             'request': Mock(
                 user=self.test_user,
-                path='/mock/path',
+                path='mock1',
                 method='get',
                 GET={},
             ),
@@ -166,13 +165,17 @@ class TemplateTagTest(BaseTourTest):
             ),
         })
         rendered_content = self.render_and_clean(self.test_template, context)
-        expected_str = '<a href="mock2" class="step-circle available ">'
+        expected_str = '<a href="mock2" class="step-circle incomplete available">'
         self.assertTrue(expected_str in rendered_content)
 
-    def test_step_display_name(self):
+    @patch('tour.tests.mocks.MockStep1.is_complete', spec_set=True)
+    def test_step_display_name(self, mock_step1_is_complete):
         """
         Makes sure the appropriate title gets displayed for the tour title
+        :type mock_step1_is_complete: Mock
         """
+        mock_step1_is_complete.return_value = False
+
         self.login_user1()
         self.tour1.load_tour_class().add_user(self.test_user)
         context = Context({
@@ -189,10 +192,14 @@ class TemplateTagTest(BaseTourTest):
         expected_html = '<div class="tour-name">{0}</div>'.format(self.step1.display_name)
         self.assertTrue(expected_html in rendered_content)
 
-    def test_tour_display_name(self):
+    @patch('tour.tests.mocks.MockStep1.is_complete', spec_set=True)
+    def test_tour_display_name(self, mock_step1_is_complete):
         """
         Makes sure the appropriate title gets displayed for the tour title
+        :type mock_step1_is_complete: Mock
         """
+        mock_step1_is_complete.return_value = False
+
         self.login_user1()
         self.tour1.load_tour_class().add_user(self.test_user)
 

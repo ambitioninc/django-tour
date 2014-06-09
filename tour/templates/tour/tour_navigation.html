@@ -10,7 +10,7 @@
             <span class="tour-step-wrap">
                 {% for step in tour.steps %}
                     <a href="{{ step.url }}" class="step-circle {{ step.cls }}">
-                        <span class="step-name">{{ forloop.counter }}. {{ step.name }}</span>
+                        <span class="step-name">{{ forloop.counter }}. {{ step.display_name }}</span>
                     </a>
                 {% endfor %}
             </span>

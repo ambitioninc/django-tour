@@ -1,10 +1,8 @@
 from copy import deepcopy
-import json
 
 from django import template
 from django.template.loader import get_template
 
-from tour.api import TourResource
 from tour.models import Tour
 from tour.serializers import TourSerializer
 
@@ -28,19 +26,21 @@ class TourNavNode(template.Node):
             request.GET = mutable_get
         return tour
 
-    def add_display_data(self, tour_dict, request):
-        if not tour_dict:
+    def get_tour_dict(self, tour, context):
+        if not tour:
             return None
+
+        tour_dict = TourSerializer(tour, context=context).data
 
         # Set the step css classes
         previous_steps_complete = True
         is_after_current = False
         for step_dict in tour_dict['steps']:
             classes = []
-            if step_dict['url'] == request.path:
+            if step_dict['url'] == context['request'].path:
                 classes.append('current')
                 step_dict['current'] = True
-                tour_dict['display_name'] = step_dict['name']
+                tour_dict['display_name'] = step_dict['display_name']
                 is_after_current = True
             if not previous_steps_complete:
                 classes.append('incomplete')
@@ -66,7 +66,7 @@ class TourNavNode(template.Node):
                 return ''
 
             tour = self.get_tour(context['request'])
-            context['tour'] = self.add_display_data(TourSerializer(tour).data, context['request'])
+            context['tour'] = self.get_tour_dict(tour, context)
 
             # Load the tour template and render it
             tour_template = get_template('tour/tour_navigation.html')

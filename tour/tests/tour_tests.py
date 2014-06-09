@@ -226,54 +226,6 @@ class TourTest(BaseTourTest):
         mock_step1_is_complete.return_value = True
         self.assertTrue(tour1_class.is_complete(self.test_user))
 
-    # def test_user_functions(self):
-    #     """
-    #     Makes sure a tour is created when adding a user to a tour that doesn't exist
-    #     Verifies that a user can be assigned a tour only once
-    #     Tests fetching an active tour for a user
-    #     """
-    #     self.assertIsNone(Tour.objects.get_for_user(User()))
-    #     self.assertIsNone(Tour.objects.get_recent_tour(User()))
-    #     self.assertIsNone(Tour.objects.get_for_user(self.test_user))
-    #
-    #     # Create a single tour
-    #     MockTour.create()
-    #
-    #     # Add a user
-    #     MockTour.add_user(self.test_user)
-    #     self.assertEqual(1, TourStatus.objects.all().count())
-    #
-    #     # Delete all tours and make sure a tour is created when adding a user
-    #     Tour.objects.all().delete()
-    #     self.assertEqual(0, TourStatus.objects.all().count())
-    #     MockTour.add_user(self.test_user)
-    #     self.assertEqual(1, TourStatus.objects.all().count())
-    #
-    #     # Try to add the user again
-    #     MockTour.add_user(self.test_user)
-    #     self.assertEqual(1, TourStatus.objects.all().count())
-    #
-    #     # Fetch the tour
-    #     tour_class = Tour.objects.get_for_user(self.test_user)
-    #     self.assertIsNotNone(tour_class)
-    #
-    #     # Set the tours as complete
-    #     MockStep1.complete = True
-    #     MockStep2.complete = True
-    #
-    #     # Check if MockTour is complete
-    #     tour_class = Tour.objects.get_for_user(self.test_user)
-    #     self.assertIsNone(tour_class)
-    #
-    #     # Make sure we can get the most recent tour
-    #     tour_class = Tour.objects.get_recent_tour(self.test_user)
-    #     self.assertIsNotNone(tour_class)
-    #
-    #     # Make sure a second tour will be added
-    #     MockTour.add_user(self.test_user)
-    #     self.assertEqual(2, TourStatus.objects.all().count())
-    #     self.assertEqual(1, TourStatus.objects.filter(complete=False).count())
-
 
 class StepTest(BaseTourTest):
     """

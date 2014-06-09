@@ -6,9 +6,9 @@ class TourStepMixin(object):
     """
     Provides a method for requiring navigation through the tour steps in order
     """
-    def tour_should_redirect(self, tour_class, current_index, next_index):
+    def tour_should_redirect(self, user, tour_class, current_index, next_index):
         # check if tour is incomplete
-        if tour_class.current_step_class:
+        if tour_class.get_current_step(user):
             # check if the current step is later in the tour than the expected step
             if current_index >= 0 and next_index >= 0:
                 if current_index > next_index:
@@ -21,20 +21,21 @@ class TourStepMixin(object):
                 return True
         return False
 
-    def get_user_tour_class(self, request):
+    def get_user_tour(self, request):
         # Get the tour class for the user
-        tour_class = Tour.objects.get_for_user(request.user)
-        if tour_class is None:
-            tour_class = Tour.objects.get_recent_tour(request.user)
-        return tour_class
+        tour = Tour.objects.get_for_user(request.user)
+        if tour is None:
+            tour = Tour.objects.get_recent_tour(request.user)
+        return tour
 
     def get_tour_redirect_url(self, request):
-        tour_class = self.get_user_tour_class(request)
-        if not tour_class:
+        tour = self.get_user_tour(request)
+        if not tour:
             return None
 
         # Determine the current step and expected step indices
-        next_url = tour_class.get_next_url()
+        tour_class = tour.load_tour_class()
+        next_url = tour_class.get_next_url(request.user)
         url_list = tour_class.get_url_list()
 
         current_index = -1
@@ -43,7 +44,7 @@ class TourStepMixin(object):
             current_index = url_list.index(request.path)
         if next_url in url_list:
             next_index = url_list.index(next_url)
-        should_redirct = self.tour_should_redirect(tour_class, current_index, next_index)
+        should_redirct = self.tour_should_redirect(request.user, tour_class, current_index, next_index)
         if should_redirct:
             return next_url
         return None

@@ -17,18 +17,21 @@ class SerializerTest(BaseTourTest):
             'display_name': 'Mock Step 1',
             'url': 'mock1',
             'sort_order': 0,
+            'complete': False,
             'steps': [{
                 'name': 'mock3',
                 'display_name': 'Mock Step 3',
                 'url': 'mock3',
                 'sort_order': 2,
-                'steps': []
+                'steps': [],
+                'complete': False,
             }, {
                 'name': 'mock4',
                 'display_name': 'Mock Step 4',
                 'url': 'mock4',
                 'sort_order': 3,
-                'steps': []
+                'steps': [],
+                'complete': False,
             }]
         })
 
@@ -47,24 +50,28 @@ class SerializerTest(BaseTourTest):
                 'display_name': 'Mock Step 1',
                 'url': 'mock1',
                 'sort_order': 0,
+                'complete': False,
                 'steps': [{
                     'name': 'mock3',
                     'display_name': 'Mock Step 3',
                     'url': 'mock3',
                     'sort_order': 2,
-                    'steps': []
+                    'steps': [],
+                    'complete': False,
                 }, {
                     'name': 'mock4',
                     'display_name': 'Mock Step 4',
                     'url': 'mock4',
                     'sort_order': 3,
-                    'steps': []
+                    'steps': [],
+                    'complete': False,
                 }]
             }, {
                 'name': 'mock2',
                 'display_name': 'Mock Step 2',
                 'url': 'mock2',
                 'sort_order': 1,
-                'steps': []
+                'steps': [],
+                'complete': False,
             }]
         })
