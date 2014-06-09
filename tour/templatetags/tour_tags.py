@@ -6,6 +6,7 @@ from django.template.loader import get_template
 
 from tour.api import TourResource
 from tour.models import Tour
+from tour.serializers import TourSerializer
 
 
 register = template.Library()
@@ -27,41 +28,36 @@ class TourNavNode(template.Node):
             request.GET = mutable_get
         return tour
 
-    def get_tour_dict(self, tour_class, request):
-        if tour_class:
-            # Serialize the tour and its steps
-            tour = tour_class.tour
-            tour_resource = TourResource()
-            tour_bundle = tour_resource.build_bundle(obj=tour, request=request)
-            tour_data = tour_resource.full_dehydrate(tour_bundle)
-            tour_json = tour_resource.serialize(None, tour_data, 'application/json')
-            tour_dict = json.loads(tour_json)
+    def add_display_data(self, tour_dict, request):
+        if not tour_dict:
+            return None
 
-            # Set the step css classes
-            previous_steps_complete = True
-            is_after_current = False
-            tour_dict['display_name'] = tour.name
-            for step_dict in tour_dict['steps']:
-                cls = ''
-                if step_dict['url'] == request.path:
-                    cls += 'current '
-                    step_dict['current'] = True
-                    tour_dict['display_name'] = step_dict['name']
-                    is_after_current = True
-                if not previous_steps_complete:
-                    cls += 'incomplete unavailable '
-                    step_dict['url'] = '#'
-                elif not step_dict['complete']:
-                    cls += 'incomplete available '
-                    previous_steps_complete = False
-                elif is_after_current:
-                    cls += 'available '
-                else:
-                    cls += 'complete available '
-                step_dict['cls'] = cls
+        # Set the step css classes
+        previous_steps_complete = True
+        is_after_current = False
+        for step_dict in tour_dict['steps']:
+            classes = []
+            if step_dict['url'] == request.path:
+                classes.append('current')
+                step_dict['current'] = True
+                tour_dict['display_name'] = step_dict['name']
+                is_after_current = True
+            if not previous_steps_complete:
+                classes.append('incomplete')
+                classes.append('unavailable')
+                step_dict['url'] = '#'
+            elif not step_dict['complete']:
+                classes.append('incomplete')
+                classes.append('available')
+                previous_steps_complete = False
+            elif is_after_current:
+                classes.append('available')
+            else:
+                classes.append('complete')
+                classes.append('available')
+            step_dict['cls'] = ' '.join(classes)
 
-            return tour_dict
-        return {}
+        return tour_dict
 
     def render(self, context):
         if 'request' in context and hasattr(context['request'], 'user'):
@@ -70,8 +66,7 @@ class TourNavNode(template.Node):
                 return ''
 
             tour = self.get_tour(context['request'])
-            if tour:
-                context['tour'] = self.get_tour_dict(tour.load_tour_class(), context['request'])
+            context['tour'] = self.add_display_data(TourSerializer(tour).data, context['request'])
 
             # Load the tour template and render it
             tour_template = get_template('tour/tour_navigation.html')
