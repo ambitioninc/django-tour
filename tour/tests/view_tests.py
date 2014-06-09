@@ -1,5 +1,5 @@
 from mock import Mock, patch
-from tour.tests.mocks import MockTour, MockRequest, MockView, MockStep1, MockStep2
+from tour.tests.mocks import MockView
 from tour.tests.tour_tests import BaseTourTest
 
 
