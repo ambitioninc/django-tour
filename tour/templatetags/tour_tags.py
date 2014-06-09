@@ -69,16 +69,12 @@ class TourNavNode(template.Node):
             if not context['request'].user.id:
                 return ''
 
-            print 'one'
             tour = self.get_tour(context['request'])
             if tour:
                 context['tour'] = self.get_tour_dict(tour.load_tour_class(), context['request'])
-            print 'two'
-            print context
 
             # Load the tour template and render it
             tour_template = get_template('tour/tour_navigation.html')
-            print tour_template
             return tour_template.render(context)
         return ''
 

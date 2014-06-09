@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.template import Template, Context
 from mock import Mock, patch
+from tour.models import Test
 
 from tour.tests.tour_tests import BaseTourTest
 

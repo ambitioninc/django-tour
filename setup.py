@@ -37,7 +37,7 @@ setup(
     license='MIT',
     install_requires=[
         'django>=1.6',
-        'django-tastypie>=0.11',
+        'djangorestframework>=2.3.13',
     ],
     tests_require=[
         'psycopg2',

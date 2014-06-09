@@ -16,7 +16,7 @@ class BaseStep(object):
         """
         return True
 
-    def get_steps(self):
+    def get_steps(self, depth=-1):
         """
         Returns the steps in order based on if there is a parent or not
         TODO: optimize this
@@ -25,7 +25,8 @@ class BaseStep(object):
         steps = self.step.steps.all().filter(parent_step=self.step).order_by('sort_order')
         for step in steps:
             all_steps.append(step)
-            all_steps.extend(step.load_step_class().get_steps())
+            if depth != 0:
+                all_steps.extend(step.load_step_class().get_steps(depth=depth-1))
         return all_steps
 
 
@@ -37,7 +38,7 @@ class BaseTour(object):
         # self.current_step_class = None
         self.tour = tour
 
-    def get_steps(self):
+    def get_steps(self, depth=-1):
         """
         Returns the steps in order based on if there is a parent or not
         TODO: optimize this
@@ -46,7 +47,8 @@ class BaseTour(object):
         steps = self.tour.steps.all().order_by('sort_order')
         for step in steps:
             all_steps.append(step)
-            all_steps.extend(step.load_step_class().get_steps())
+            if depth != 0:
+                all_steps.extend(step.load_step_class().get_steps(depth=depth-1))
         return all_steps
 
     def get_url_list(self):
