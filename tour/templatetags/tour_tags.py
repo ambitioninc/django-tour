@@ -20,14 +20,14 @@ class TourNavNode(template.Node):
 
     def get_tour_class(self, request):
         # Check for any tours
-        tour_class = Tour.objects.get_for_user(request.user)
-        if not tour_class and self.always_show:
-            tour_class = Tour.objects.get_recent_tour(request.user)
+        tour = Tour.objects.get_for_user(request.user)
+        if not tour and self.always_show:
+            tour = Tour.objects.get_recent_tour(request.user)
         if self.always_show:
             mutable_get = deepcopy(request.GET)
             mutable_get['always_show'] = True
             request.GET = mutable_get
-        return tour_class
+        return tour
 
     def get_tour_dict(self, tour_class, request):
         if tour_class:

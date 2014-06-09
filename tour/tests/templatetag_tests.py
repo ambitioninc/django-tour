@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.template import Template, Context
-from tour.tests.mocks import MockTour, MockRequest, MockStep1, MockStep2
+from mock import Mock
+
 from tour.tests.tour_tests import BaseTourTest
 
 
@@ -8,77 +9,112 @@ class TemplateTagTest(BaseTourTest):
     """
     Tests the functionality of the template tag
     """
+
+    def setUp(self):
+        super(TemplateTagTest, self).setUp()
+        self.test_template = Template('{% load tour_tags %}{% tour_navigation %}')
+
+    def test_template_no_user(self):
+        """
+        Verifies that the tour template does not get rendered without a user
+        """
+        context = Context({
+            'request': Mock(
+                user=User(),
+                path='/mock/path',
+                method='get',
+                GET={},
+            ),
+        })
+        self.assertEqual('', self.test_template.render(context))
+
     def test_tour_tag(self):
         """
-        Verifies that a tour gets displayed when a user has a tour
+
         """
-        # Verifies that the tour template does not get rendered without a user
-        MockTour.create()
-        test_template = Template('{% load tour_tags %}{% tour_navigation %}')
-        context = Context({
-            'request': MockRequest(User(), '/mock/path'),
-        })
-        self.assertEqual('', test_template.render(context))
 
         # Verifies that the tour template does not get rendered if a user doesn't have a tour
         self.login_user1()
         context = Context({
-            'request': MockRequest(self.test_user, '/mock/path'),
+            'request': Mock(
+                user=self.test_user,
+                path='/mock/path',
+                method='get',
+                GET={},
+            ),
         })
-        self.assertEqual('', test_template.render(context).strip())
+        self.assertEqual('', self.test_template.render(context).strip())
 
         # Verifies that the tour template gets rendered if a user has a tour
-        MockTour.add_user(self.test_user)
-        test_template = Template('{% load tour_tags %}{% tour_navigation %}')
+        self.tour1.load_tour_class().add_user(self.test_user)
         context = Context({
-            'request': MockRequest(self.test_user, '/mock/path'),
+            'request': Mock(
+                user=self.test_user,
+                path='/mock/path',
+                method='get',
+                GET={},
+            ),
         })
-        self.assertTrue('tour-wrap' in test_template.render(context))
+        self.assertTrue('tour-wrap' in self.test_template.render(context))
 
         # Verify that the current class gets applied
         context = Context({
-            'request': MockRequest(self.test_user, 'mock1'),
+            'request': Mock(
+                user=self.test_user,
+                path='mock1',
+                method='get',
+                GET={},
+            ),
         })
-        self.assertTrue('current' in test_template.render(context))
+        self.assertTrue('current' in self.test_template.render(context))
 
         # Verify that the complete class gets applied
         MockStep1.complete = True
         context = Context({
             'request': MockRequest(self.test_user, 'mock2'),
         })
-        self.assertTrue('complete' in test_template.render(context))
+        self.assertTrue('complete' in self.test_template.render(context))
 
         # Make sure no tour gets rendered when it is complete
         MockStep2.complete = True
-        test_template = Template('{% load tour_tags %}{% tour_navigation %}')
         context = Context({
-            'request': MockRequest(self.test_user, '/mock/path'),
+            'request': Mock(
+                user=self.test_user,
+                path='/mock/path',
+                method='get',
+                GET={},
+            ),
         })
-        self.assertTrue('tour-wrap' not in test_template.render(context))
+        self.assertTrue('tour-wrap' not in self.test_template.render(context))
 
         # Makes sure that the tour does get displayed if the always_show flag is on
-        test_template = Template('{% load tour_tags %}{% tour_navigation always_show=True %}')
+        self.test_template = Template('{% load tour_tags %}{% tour_navigation always_show=True %}')
         context = Context({
-            'request': MockRequest(self.test_user, '/mock/path'),
+            'request': Mock(
+                user=self.test_user,
+                path='/mock/path',
+                method='get',
+                GET={},
+            ),
         })
-        self.assertTrue('tour-wrap' in test_template.render(context))
+        self.assertTrue('tour-wrap' in self.test_template.render(context))
 
         # Verify no errors for missing request object
         context = Context({})
-        self.assertEqual('', test_template.render(context))
+        self.assertEqual('', self.test_template.render(context))
 
     def test_step_classes(self):
         self.login_user1()
-        MockTour.add_user(self.test_user)
+        self.tour1.load_tour_class().add_user(self.test_user)
 
         # Test that the second step has an available class but not a complete class
         MockStep1.complete = True
         MockStep2.complete = True
-        test_template = Template('{% load tour_tags %}{% tour_navigation always_show=True %}')
+        self.test_template = Template('{% load tour_tags %}{% tour_navigation always_show=True %}')
         context = Context({
             'request': MockRequest(self.test_user, 'mock1'),
         })
-        rendered_content = self.render_and_clean(test_template, context)
+        rendered_content = self.render_and_clean(self.test_template, context)
         expected_str = '<a href="mock2" class="step-circle available ">'
         self.assertTrue(expected_str in rendered_content)
 
@@ -87,13 +123,18 @@ class TemplateTagTest(BaseTourTest):
         Makes sure the appropriate title gets displayed for the tour title
         """
         self.login_user1()
-        MockTour.add_user(self.test_user)
+        self.tour1.load_tour_class().add_user(self.test_user)
 
-        test_template = Template('{% load tour_tags %}{% tour_navigation %}')
+        self.test_template = Template('{% load tour_tags %}{% tour_navigation %}')
         context = Context({
-            'request': MockRequest(self.test_user, 'mock1'),
+            'request': Mock(
+                user=self.test_user,
+                path='mock1',
+                method='get',
+                GET={},
+            ),
         })
-        rendered_content = self.render_and_clean(test_template, context)
+        rendered_content = self.render_and_clean(self.test_template, context)
 
         # Make sure the current step is displayed
         expected_html = '<div class="tour-name">{0}</div>'.format(MockStep1.name)
@@ -101,9 +142,14 @@ class TemplateTagTest(BaseTourTest):
 
         # Make sure the tour title is displayed
         context = Context({
-            'request': MockRequest(self.test_user, 'mock0'),
+            'request': Mock(
+                user=self.test_user,
+                path='mock0',
+                method='get',
+                GET={},
+            ),
         })
-        rendered_content = self.render_and_clean(test_template, context)
+        rendered_content = self.render_and_clean(self.test_template, context)
         expected_html = '<div class="tour-name">{0}</div>'.format(MockTour.name)
         self.assertTrue(expected_html in rendered_content)
 
