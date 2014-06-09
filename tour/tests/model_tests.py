@@ -1,5 +1,7 @@
+from django.test import TestCase
+from django_dynamic_fixture import G
 from mock import patch
-from tour.models import Tour, TourStatus
+from tour.models import Tour, TourStatus, Step
 from tour.tests.tour_tests import BaseTourTest
 
 
@@ -160,3 +162,23 @@ class TourManagerTest(BaseTourTest):
         Verifies that None is returned if no tours exist for a user
         """
         self.assertIsNone(Tour.objects.get_next_url(self.test_user))
+
+
+class TourTest(TestCase):
+
+    def test_unicode(self):
+        """
+        Tests the tour unicode method
+        """
+        tour = G(Tour, display_name='test1')
+        self.assertEqual(u'test1', unicode(tour))
+
+
+class StepTest(TestCase):
+
+    def test_unicode(self):
+        """
+        Tests the step unicode method
+        """
+        step = G(Step, display_name='test1')
+        self.assertEqual(u'test1', unicode(step))
