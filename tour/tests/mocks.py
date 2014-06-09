@@ -12,14 +12,6 @@ class MockView(TourStepMixin, View):
         return HttpResponse('ok')
 
 
-class MockRequest(object):
-    def __init__(self, user=None, path=None, params=None, method=None):
-        self.user = user
-        self.path = path
-        self.method = method or 'get'
-        self.GET = params or {}
-
-
 class MockStep1(BaseStep):
     pass
 
