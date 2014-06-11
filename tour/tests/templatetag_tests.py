@@ -13,7 +13,7 @@ class TemplateTagTest(BaseTourTest):
     def setUp(self):
         super(TemplateTagTest, self).setUp()
         self.test_template = Template('{% load tour_tags %}{% tour_navigation %}')
-        self.tour1.steps.add(self.step1, self.step2)
+        self.tour1.steps.add(self.step1, self.step2, self.step3, self.step4)
 
     def test_template_no_user(self):
         """
@@ -146,11 +146,14 @@ class TemplateTagTest(BaseTourTest):
         self.assertEqual('', self.test_template.render(context))
 
     @patch('tour.tests.mocks.MockStep2.is_complete', spec_set=True)
-    def test_step_classes(self, mock_step2_is_complete):
+    @patch('tour.tests.mocks.MockStep1.is_complete', spec_set=True)
+    def test_step_classes(self, mock_step1_is_complete, mock_step2_is_complete):
         """
         Test that the second step has an available class but not a complete class
+        :type mock_step1_is_complete: Mock
         :type mock_step2_is_complete: Mock
         """
+        mock_step1_is_complete.return_value = True
         mock_step2_is_complete.return_value = False
         self.test_template = Template('{% load tour_tags %}{% tour_navigation always_show=True %}')
 
@@ -165,7 +168,35 @@ class TemplateTagTest(BaseTourTest):
             ),
         })
         rendered_content = self.render_and_clean(self.test_template, context)
+
+        # test incomplete unavailable
+        expected_str = '<a href="#" class="step-circle incomplete unavailable">'
+        self.assertTrue(expected_str in rendered_content)
+
+        # test incomplete available
         expected_str = '<a href="mock2" class="step-circle incomplete available">'
+        self.assertTrue(expected_str in rendered_content)
+
+        # complete the second step
+        mock_step2_is_complete.return_value = True
+
+        # request the first page
+        context = Context({
+            'request': Mock(
+                user=self.test_user,
+                path='mock1',
+                method='get',
+                GET={},
+            ),
+        })
+        rendered_content = self.render_and_clean(self.test_template, context)
+
+        # test available
+        expected_str = '<a href="mock2" class="step-circle available">'
+        self.assertTrue(expected_str in rendered_content)
+
+        # test current complete available
+        expected_str = '<a href="mock1" class="step-circle current available">'
         self.assertTrue(expected_str in rendered_content)
 
     @patch('tour.tests.mocks.MockStep1.is_complete', spec_set=True)
