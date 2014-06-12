@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.test import TestCase
 from django_dynamic_fixture import G
 from mock import patch
@@ -26,6 +27,12 @@ class TourManagerTest(BaseTourTest):
         self.assertEqual(1, TourStatus.objects.filter(complete=True).count())
         self.assertEqual(1, TourStatus.objects.filter(complete=False).count())
 
+    def test_complete_tours_no_user(self):
+        """
+        Makes sure None is returned if the user is anonymous
+        """
+        self.assertIsNone(Tour.objects.complete_tours(User()))
+
     @patch('tour.tests.mocks.MockStep1.is_complete', spec_set=True)
     def test_get_for_user(self, mock_step1_is_complete):
         """
@@ -44,6 +51,12 @@ class TourManagerTest(BaseTourTest):
 
         # tour 2 will be completed, so check for tour 1
         self.assertEqual(self.tour1, Tour.objects.get_for_user(self.test_user))
+
+    def test_get_for_user_no_user(self):
+        """
+        Makes sure None is returned if the user is anonymous
+        """
+        self.assertIsNone(Tour.objects.get_for_user(User()))
 
     def test_get_for_user_empty(self):
         """
@@ -81,6 +94,12 @@ class TourManagerTest(BaseTourTest):
 
         # check that correct tour is returned
         self.assertEqual(self.tour1, Tour.objects.get_recent_tour(self.test_user))
+
+    def test_get_recent_tour_no_user(self):
+        """
+        Makes sure None is returned if the user is anonymous
+        """
+        self.assertIsNone(Tour.objects.get_recent_tour(User()))
 
     def test_get_recent_tour_incomplete(self):
         """
@@ -156,6 +175,12 @@ class TourManagerTest(BaseTourTest):
         self.assertEqual(self.step1.url, Tour.objects.get_next_url(self.test_user))
         self.assertEqual(1, mock_get_for_user.call_count)
         self.assertEqual(1, mock_get_recent_tour.call_count)
+
+    def test_get_next_url_no_user(self):
+        """
+        Makes sure None is returned if the user is anonymous
+        """
+        self.assertIsNone(Tour.objects.get_next_url(User()))
 
     def test_get_next_url_none(self):
         """
