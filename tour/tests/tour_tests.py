@@ -12,6 +12,7 @@ class BaseTourTest(TestCase):
     """
     def setUp(self):
         super(BaseTourTest, self).setUp()
+
         self.test_user = User.objects.create_user('test', 'test@gmail.com', 'test')
         self.test_user2 = User.objects.create_user('test2', 'test2@gmail.com', 'test2')
 

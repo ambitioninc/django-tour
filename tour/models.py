@@ -1,9 +1,9 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.module_loading import import_by_path
+from manager_utils import ManagerUtilsManager
 
-
-class TourManager(models.Manager):
+class TourManager(ManagerUtilsManager):
     """
     Provides extra functionality for the Tour model
     """
@@ -78,6 +78,8 @@ class Step(models.Model):
     step_class = models.CharField(max_length=128, unique=True)
     sort_order = models.IntegerField(default=0)
 
+    objects = ManagerUtilsManager()
+
     def load_step_class(self):
         """
         Imports and returns the step class.
@@ -98,3 +100,5 @@ class TourStatus(models.Model):
     complete = models.BooleanField(default=False)
     create_time = models.DateTimeField(auto_now_add=True)
     complete_time = models.DateTimeField(null=True, blank=True, default=None)
+
+    objects = ManagerUtilsManager()
