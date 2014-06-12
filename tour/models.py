@@ -1,45 +1,51 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.module_loading import import_by_path
+from manager_utils import ManagerUtilsManager
 
-from tour.utils.import_string import import_string
 
-
-class TourManager(models.Manager):
+class TourManager(ManagerUtilsManager):
     """
     Provides extra functionality for the Tour model
     """
-    def get_for_user(self, user):
+    def complete_tours(self, user):
         """
-        Checks if a tour exists for a user and returns the instantiated tour object
+        Marks any completed tours as complete
         """
         if not user.pk:
             return None
-        queryset = self
-        tours = queryset.filter(tourstatus__user=user, tourstatus__complete=False).order_by('-tourstatus__create_time')
+        tours = self.filter(tourstatus__user=user, tourstatus__complete=False)
         for tour in tours:
             tour_class = tour.load_tour_class()
-            if tour_class.is_complete(user=user) is False:
-                return tour_class
-        return None
+            if tour_class.is_complete(user):
+                tour_class.mark_complete(user)
+
+    def get_for_user(self, user):
+        """
+        Checks if a tour exists for a user and returns the tour instance
+        """
+        if not user.pk:
+            return None
+        self.complete_tours(user)
+        return self.filter(tourstatus__user=user, tourstatus__complete=False).first()
 
     def get_recent_tour(self, user):
         if not user.pk:
             return None
-        tour = self.filter(tourstatus__user=user).order_by(
+        return self.filter(tourstatus__user=user).order_by(
             'tourstatus__complete', '-tourstatus__complete_time').first()
-        if tour:
-            return tour.load_tour_class()
-        return None
 
     def get_next_url(self, user):
         """
         Convenience method to get the next url for the specified user
         """
-        tour_class = self.get_for_user(user)
-        if not tour_class:
-            tour_class = self.get_recent_tour(user)
-        if tour_class:
-            return tour_class.get_next_url()
+        if not user.pk:
+            return None
+        tour = self.get_for_user(user)
+        if not tour:
+            tour = self.get_recent_tour(user)
+        if tour:
+            return tour.load_tour_class().get_next_url(user)
         return None
 
 
@@ -49,30 +55,23 @@ class Tour(models.Model):
     and fetching the steps in the correct order.
     """
     name = models.CharField(max_length=128, unique=True)
+    display_name = models.CharField(max_length=128)
     tour_class = models.CharField(max_length=128, unique=True)
     users = models.ManyToManyField(User, through='TourStatus')
     complete_url = models.CharField(max_length=128, blank=True, null=True, default=None)
 
     objects = TourManager()
 
-    # TODO: look into callable field app
     def load_tour_class(self):
         """
         Imports and returns the tour class.
+        :return: The tour class instance determined by `tour_class`
+        :rtype: BaseTour
         """
-        return import_string(self.tour_class)(self)
+        return import_by_path(self.tour_class)(self)
 
-    def get_steps(self, parent_step=None):
-        """
-        Returns the steps in order based on if there is a parent or not
-        TODO: optimize this
-        """
-        all_steps = []
-        steps = self.step_set.all().filter(parent_step=parent_step).order_by('id')
-        for step in steps:
-            all_steps.append(step)
-            all_steps += self.get_steps(step)
-        return all_steps
+    def __unicode__(self):
+        return u'{0}'.format(self.display_name)
 
 
 class Step(models.Model):
@@ -81,16 +80,23 @@ class Step(models.Model):
     in the class specified in step_class
     """
     name = models.CharField(max_length=128, unique=True)
+    display_name = models.CharField(max_length=128)
     url = models.CharField(max_length=128, null=True, blank=True)
-    tour = models.ForeignKey(Tour)
-    parent_step = models.ForeignKey('self', null=True, related_name='child_steps')
+    tour = models.ForeignKey(Tour, related_name='steps')
+    parent_step = models.ForeignKey('self', null=True, related_name='steps')
     step_class = models.CharField(max_length=128, unique=True)
+    sort_order = models.IntegerField(default=0)
+
+    objects = ManagerUtilsManager()
 
     def load_step_class(self):
         """
         Imports and returns the step class.
         """
-        return import_string(self.step_class)(self)
+        return import_by_path(self.step_class)(self)
+
+    def __unicode__(self):
+        return u'{0}'.format(self.display_name)
 
 
 class TourStatus(models.Model):
@@ -103,3 +109,5 @@ class TourStatus(models.Model):
     complete = models.BooleanField(default=False)
     create_time = models.DateTimeField(auto_now_add=True)
     complete_time = models.DateTimeField(null=True, blank=True, default=None)
+
+    objects = ManagerUtilsManager()

@@ -37,13 +37,15 @@ setup(
     license='MIT',
     install_requires=[
         'django>=1.6',
-        'django-tastypie>=0.11',
+        'djangorestframework>=2.3.13',
+        'django-manager-utils>=0.5.3',
     ],
     tests_require=[
         'psycopg2',
         'django-nose',
         'mock==1.0.1',
         'south',
+        'django_dynamic_fixture',
     ],
     test_suite='run_tests.run_tests',
     include_package_data=True,
