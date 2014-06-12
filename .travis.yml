@@ -4,6 +4,7 @@ python:
 env:
   global:
     - DB=postgres
+    - NOSE_NOLOGCAPTURE=1
   matrix:
     - DJANGO=1.6.2
 install:
