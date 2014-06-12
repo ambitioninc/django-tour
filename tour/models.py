@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.module_loading import import_by_path
 from manager_utils import ManagerUtilsManager
 
+
 class TourManager(ManagerUtilsManager):
     """
     Provides extra functionality for the Tour model
@@ -11,6 +12,8 @@ class TourManager(ManagerUtilsManager):
         """
         Marks any completed tours as complete
         """
+        if not user.pk:
+            return None
         tours = self.filter(tourstatus__user=user, tourstatus__complete=False)
         for tour in tours:
             tour_class = tour.load_tour_class()
@@ -21,10 +24,14 @@ class TourManager(ManagerUtilsManager):
         """
         Checks if a tour exists for a user and returns the tour instance
         """
+        if not user.pk:
+            return None
         self.complete_tours(user)
         return self.filter(tourstatus__user=user, tourstatus__complete=False).first()
 
     def get_recent_tour(self, user):
+        if not user.pk:
+            return None
         return self.filter(tourstatus__user=user).order_by(
             'tourstatus__complete', '-tourstatus__complete_time').first()
 
@@ -32,6 +39,8 @@ class TourManager(ManagerUtilsManager):
         """
         Convenience method to get the next url for the specified user
         """
+        if not user.pk:
+            return None
         tour = self.get_for_user(user)
         if not tour:
             tour = self.get_recent_tour(user)
