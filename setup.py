@@ -39,6 +39,7 @@ setup(
         'django>=1.6',
         'djangorestframework>=2.3.13',
         'django-manager-utils>=0.5.3',
+        'django_filter>=0.7',
     ],
     tests_require=[
         'psycopg2',
