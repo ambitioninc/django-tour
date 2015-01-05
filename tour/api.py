@@ -13,4 +13,5 @@ class TourApiView(ListAPIView):
     authentication_classes = (SessionAuthentication,)
 
     def get_queryset(self):
+        Tour.objects.complete_tours(self.request.user)
         return Tour.objects.filter(tourstatus__user=self.request.user, tourstatus__complete=False)
