@@ -22,7 +22,7 @@ class BaseStep(object):
         TODO: optimize this
         """
         all_steps = []
-        steps = self.step.steps.all().filter(parent_step=self.step).order_by('sort_order')
+        steps = self.step.steps.filter(parent_step=self.step).order_by('sort_order')
         for step in steps:
             all_steps.append(step)
             if depth != 0:
@@ -44,7 +44,7 @@ class BaseTour(object):
         TODO: optimize this
         """
         all_steps = []
-        steps = self.tour.steps.all().order_by('sort_order')
+        steps = self.tour.steps.filter(parent_step=None).order_by('sort_order')
         for step in steps:
             all_steps.append(step)
             if depth != 0:
