@@ -26,7 +26,7 @@ class BaseStep(object):
         for step in steps:
             all_steps.append(step)
             if depth != 0:
-                all_steps.extend(step.load_step_class().get_steps(depth=depth-1))
+                all_steps.extend(step.load_step_class().get_steps(depth=depth - 1))
         return all_steps
 
 
@@ -48,7 +48,7 @@ class BaseTour(object):
         for step in steps:
             all_steps.append(step)
             if depth != 0:
-                all_steps.extend(step.load_step_class().get_steps(depth=depth-1))
+                all_steps.extend(step.load_step_class().get_steps(depth=depth - 1))
         return all_steps
 
     def get_url_list(self):

@@ -1,18 +1,21 @@
+sudo: false
 language: python
 python:
   - '2.7'
+  - '3.4'
 env:
   global:
     - DB=postgres
     - NOSE_NOLOGCAPTURE=1
   matrix:
-    - DJANGO=1.6.2
+    - DJANGO=1.6.11
+    - DJANGO=1.7.7
 install:
   - pip install -q coverage flake8 Django==$DJANGO
 before_script:
-  - flake8 . --max-line-length=120 --max-complexity=10 --exclude='env,migrations,*.egg'
   - psql -c 'CREATE DATABASE tour;' -U postgres
 script:
+  - flake8 .
   - (cd tour/static/tour && npm install && npm test)
-  - coverage run --source='tour' --branch --omit='tour/migrations/*' setup.py test
-  - coverage report --fail-under=100 --show-missing
+  - coverage run setup.py test
+  - coverage report --fail-under=100
