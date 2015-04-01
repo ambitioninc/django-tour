@@ -191,19 +191,19 @@ class TourManagerTest(BaseTourTest):
 
 class TourTest(TestCase):
 
-    def test_unicode(self):
+    def test_str(self):
         """
-        Tests the tour unicode method
+        Tests the tour str method
         """
         tour = G(Tour, display_name='test1')
-        self.assertEqual(u'test1', unicode(tour))
+        self.assertEqual('test1', str(tour))
 
 
 class StepTest(TestCase):
 
-    def test_unicode(self):
+    def test_str(self):
         """
-        Tests the step unicode method
+        Tests the step str method
         """
         step = G(Step, display_name='test1')
-        self.assertEqual(u'test1', unicode(step))
+        self.assertEqual('test1', str(step))

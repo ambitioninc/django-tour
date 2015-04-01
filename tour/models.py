@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.module_loading import import_by_path
 from manager_utils import ManagerUtilsManager
+import six
 
 
 class TourManager(ManagerUtilsManager):
@@ -49,6 +50,7 @@ class TourManager(ManagerUtilsManager):
         return None
 
 
+@six.python_2_unicode_compatible
 class Tour(models.Model):
     """
     Container object for tour steps. Provides functionality for loading the tour logic class
@@ -70,10 +72,11 @@ class Tour(models.Model):
         """
         return import_by_path(self.tour_class)(self)
 
-    def __unicode__(self):
-        return u'{0}'.format(self.display_name)
+    def __str__(self):
+        return '{0}'.format(self.display_name)
 
 
+@six.python_2_unicode_compatible
 class Step(models.Model):
     """
     Represents one step of the tour that must be completed. The custom logic is implemented
@@ -95,8 +98,8 @@ class Step(models.Model):
         """
         return import_by_path(self.step_class)(self)
 
-    def __unicode__(self):
-        return u'{0}'.format(self.display_name)
+    def __str__(self):
+        return '{0}'.format(self.display_name)
 
 
 class TourStatus(models.Model):
