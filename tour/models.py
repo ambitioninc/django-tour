@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.db import models
 from django.utils.module_loading import import_by_path
 from manager_utils import ManagerUtilsManager
@@ -59,7 +59,7 @@ class Tour(models.Model):
     name = models.CharField(max_length=128, unique=True)
     display_name = models.CharField(max_length=128)
     tour_class = models.CharField(max_length=128, unique=True)
-    users = models.ManyToManyField(User, through='TourStatus')
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL, through='TourStatus')
     complete_url = models.CharField(max_length=128, blank=True, null=True, default=None)
 
     objects = TourManager()
@@ -108,7 +108,7 @@ class TourStatus(models.Model):
     track of whether the tour has been completed by a user.
     """
     tour = models.ForeignKey(Tour)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     complete = models.BooleanField(default=False)
     create_time = models.DateTimeField(auto_now_add=True)
     complete_time = models.DateTimeField(null=True, blank=True, default=None)

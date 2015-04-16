@@ -58,6 +58,7 @@ guide wherever possible.
 Before a new release, please go through the following checklist:
 
 * Bump version in tour/version.py
+* Add a change note in README.md
 * Git tag the version
 * Upload to pypi:
 ```bash
