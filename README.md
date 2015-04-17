@@ -11,6 +11,7 @@ A single tour can be assigned to any number of users, and the completion of the 
 1. [Installation] (#installation)
 1. [Creating a Tour] (#creating-a-tour)
 1. [Displaying the Navigation] (#displaying-the-navigation)
+1. [Changes](#changes)
 
 ## Installation
 To install Django Tour:
@@ -164,3 +165,10 @@ form the `TourStepMixin` in the tour.
 class MyView(TourStepMixin, TemplateView):
     """ view config """
 ```
+
+# Changes
+
+-  0.6.3
+  - Updated to `Tour` and `TourStatus` models Foreign Key to `settings.AUTH_USER_MODEL`
+- 0.6.2
+  - Added Django 1.7 support
