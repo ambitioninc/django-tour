@@ -5,24 +5,17 @@ import sys
 from optparse import OptionParser
 
 import django
-from django.conf import settings
-
 from settings import configure_settings
 
 # Configure the default settings and setup django
 configure_settings()
-if django.VERSION[1] >= 7:
-    django.setup()
+django.setup()
 
 # Django nose must be imported here since it depends on the settings being configured
 from django_nose import NoseTestSuiteRunner
 
 
 def run_tests(*test_args, **kwargs):
-    if 'south' in settings.INSTALLED_APPS:
-        from south.management.commands import patch_for_test_db_setup
-        patch_for_test_db_setup()
-
     if not test_args:
         test_args = ['tour']
 
