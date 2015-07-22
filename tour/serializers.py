@@ -3,7 +3,7 @@ from tour.models import Tour, Step
 
 
 class TourSerializer(serializers.ModelSerializer):
-    steps = serializers.SerializerMethodField('get_steps')
+    steps = serializers.SerializerMethodField()
 
     class Meta:
         model = Tour
@@ -17,8 +17,8 @@ class TourSerializer(serializers.ModelSerializer):
 
 
 class StepSerializer(serializers.ModelSerializer):
-    steps = serializers.SerializerMethodField('get_steps')
-    complete = serializers.SerializerMethodField('get_complete')
+    steps = serializers.SerializerMethodField()
+    complete = serializers.SerializerMethodField()
 
     class Meta:
         model = Step

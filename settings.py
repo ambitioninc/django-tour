@@ -1,6 +1,5 @@
 import os
 
-import django
 from django.conf import settings
 
 
@@ -37,7 +36,7 @@ def configure_settings():
                 'django.contrib.admin',
                 'tour',
                 'tour.tests',
-            ) + (('south',) if django.VERSION[1] <= 6 else ()),
+            ),
             ROOT_URLCONF='tour.urls',
             DEBUG=False,
         )

@@ -168,6 +168,9 @@ class MyView(TourStepMixin, TemplateView):
 
 # Changes
 
+-  0.6.4
+  - Updated to be DRF 3.1 compatible
+  - Dropped Django 1.6 support
 -  0.6.3
   - Updated to `Tour` and `TourStatus` models Foreign Key to `settings.AUTH_USER_MODEL`
 - 0.6.2
