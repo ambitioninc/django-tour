@@ -2,7 +2,6 @@
 branch = True
 omit =
     */migrations/*
-    */south_migrations/*
     tour/version.py
     tour/apps.py
 source = tour

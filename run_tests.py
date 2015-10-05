@@ -30,7 +30,6 @@ def run_tests(*test_args, **kwargs):
 if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option('--verbosity', dest='verbosity', action='store', default=1, type=int)
-    parser.add_options(NoseTestSuiteRunner.options)
     (options, args) = parser.parse_args()
 
     run_tests(*args, **options.__dict__)

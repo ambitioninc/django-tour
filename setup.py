@@ -42,13 +42,13 @@ setup(
     install_requires=[
         'Django>=1.7',
         'djangorestframework>=2.3.13',
-        'django-manager-utils>=0.7.2',
+        'django-manager-utils>=0.8.2',
         'django_filter>=0.7',
     ],
     tests_require=[
         'psycopg2',
-        'django-nose',
-        'mock',
+        'django-nose>=1.4',
+        'mock==1.0.1',
         'django_dynamic_fixture',
     ],
     test_suite='run_tests.run_tests',
